@@ -10,6 +10,8 @@ The goal of this project is to accurately classify tweets into one of four senti
 - Neutral
 - Irrelevant
 
+![visualization1](https://github.com/user-attachments/assets/8145f959-1dcb-48ad-a32b-d0df11a4fc93)
+
 ## Features
 
 - **Data Preprocessing**: Tokenization, lowercasing, punctuation removal, stopword removal, and lemmatization.
@@ -65,13 +67,19 @@ Follow the steps in the notebook to:
 - **Train and evaluate models:** Train Logistic Regression, Random Forest, and XGBoost models. Evaluate their performance using various metrics.
 - **Save and load models:** Save the trained models to the models directory and load them for predictions.
 
+![wordcloud](https://github.com/user-attachments/assets/830bf0b4-7943-49a6-b52f-1454c543ec32)
+
 ### Making Predictions
 
 Use the trained models to make predictions on new tweet data. Example tweets and their sentiment predictions are provided in the notebook.
 
+## Output form the best model
+![output](https://github.com/user-attachments/assets/227e7220-e337-46b5-8adf-fc5d2fd72f4e)
+
 ## Additional Information
 
 - **Code Comments:** Every step in the notebook is thoroughly commented. Each code cell contains comments explaining the purpose and functionality of the code.
+- **Multiple models and dataset processing used:** I used more than one specific workflow and model just to demonstrate different solutions and methods.
 
 ## Contributing
 
