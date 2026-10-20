@@ -6,9 +6,10 @@ from pathlib import Path
 from typing import Any, Final
 
 import joblib
+import pandas as pd
 from sklearn.pipeline import Pipeline
 
-SCHEMA_VERSION: Final = 1
+SCHEMA_VERSION: Final = 2
 
 
 def save_artifact(
@@ -44,10 +45,20 @@ def load_artifact(path: str | Path) -> dict[str, Any]:
     return artifact
 
 
-def predict(path: str | Path, texts: list[str]) -> list[str]:
+def predict(
+    path: str | Path,
+    texts: list[str],
+    *,
+    entities: list[str] | None = None,
+) -> list[str]:
     """Predict sentiment labels with a trusted persisted pipeline."""
 
     if not texts or any(not text.strip() for text in texts):
         raise ValueError("At least one non-empty text is required")
+    if entities is None:
+        entities = ["Unknown"] * len(texts)
+    if len(entities) != len(texts):
+        raise ValueError("entities and texts must have the same length")
+    inputs = pd.DataFrame({"entity": entities, "text": texts})
     artifact = load_artifact(path)
-    return artifact["model"].predict(texts).tolist()
+    return artifact["model"].predict(inputs).tolist()

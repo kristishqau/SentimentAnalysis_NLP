@@ -8,7 +8,7 @@ import pytest
 
 from sentiment_analysis.artifacts import load_artifact, predict, save_artifact
 from sentiment_analysis.data import stratified_group_holdout
-from sentiment_analysis.modeling import evaluate, select_model
+from sentiment_analysis.modeling import MODEL_KINDS, build_pipeline, evaluate, select_model
 
 
 def test_model_selection_evaluation_and_round_trip(
@@ -35,7 +35,14 @@ def test_model_selection_evaluation_and_round_trip(
     artifact = load_artifact(path)
 
     assert artifact["metadata"] == {"purpose": "test"}
-    assert predict(path, ["excellent delightful amazing"])[0] == "Positive"
+    assert (
+        predict(
+            path,
+            ["excellent delightful amazing"],
+            entities=["ExampleEntity"],
+        )[0]
+        == "Positive"
+    )
 
 
 def test_artifact_validation(tmp_path: Path) -> None:
@@ -45,3 +52,12 @@ def test_artifact_validation(tmp_path: Path) -> None:
         load_artifact(malformed)
     with pytest.raises(ValueError, match="non-empty text"):
         predict(malformed, [])
+    with pytest.raises(ValueError, match="same length"):
+        predict(malformed, ["valid text"], entities=[])
+
+
+def test_all_model_kinds_build_and_unknown_kind_is_rejected() -> None:
+    for kind in MODEL_KINDS:
+        assert build_pipeline(kind=kind)
+    with pytest.raises(ValueError, match="Unknown model kind"):
+        build_pipeline(kind="unsupported")  # type: ignore[arg-type]

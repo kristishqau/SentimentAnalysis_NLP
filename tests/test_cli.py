@@ -42,6 +42,20 @@ def test_training_and_prediction_commands(
     assert evidence["dataset"]["sha256"]
     assert evidence["created_at_utc"].endswith("+00:00")
 
-    predict_command(["--model", str(model_path), "awful broken frustrating"])
+    predict_command(
+        [
+            "--model",
+            str(model_path),
+            "--entity",
+            "ExampleEntity",
+            "awful broken frustrating",
+        ]
+    )
     predictions = json.loads(capsys.readouterr().out)
-    assert predictions == [{"text": "awful broken frustrating", "sentiment": "Negative"}]
+    assert predictions == [
+        {
+            "entity": "ExampleEntity",
+            "text": "awful broken frustrating",
+            "sentiment": "Negative",
+        }
+    ]

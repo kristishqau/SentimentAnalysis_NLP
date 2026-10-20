@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Final, Literal
 
 import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.dummy import DummyClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -17,9 +19,19 @@ from sklearn.metrics import (
     recall_score,
 )
 from sklearn.model_selection import GridSearchCV, StratifiedGroupKFold
-from sklearn.pipeline import FeatureUnion, Pipeline
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder
 
 from sentiment_analysis.data import LABELS, leakage_groups
+
+ModelKind = Literal["majority", "word", "word_char", "entity_word_char"]
+MODEL_KINDS: Final[tuple[ModelKind, ...]] = (
+    "majority",
+    "word",
+    "word_char",
+    "entity_word_char",
+)
+MODEL_INPUT_COLUMNS: Final = ["entity", "text"]
 
 
 @dataclass(frozen=True)
@@ -31,22 +43,36 @@ class TrainingResult:
     best_cv_macro_f1: float
 
 
-def build_pipeline(*, max_features: int = 40_000, random_state: int = 42) -> Pipeline:
-    """Build word+character TF-IDF features and a deterministic linear classifier."""
+def build_pipeline(
+    *,
+    kind: ModelKind = "entity_word_char",
+    max_features: int = 40_000,
+    random_state: int = 42,
+    regularization: float = 1.0,
+) -> Pipeline:
+    """Build one of the comparable baseline or entity-aware pipelines."""
 
-    features = FeatureUnion(
-        [
-            (
-                "word",
-                TfidfVectorizer(
-                    strip_accents="unicode",
-                    ngram_range=(1, 2),
-                    min_df=2,
-                    max_df=0.98,
-                    max_features=max_features,
-                    sublinear_tf=True,
-                ),
+    if kind not in MODEL_KINDS:
+        raise ValueError(f"Unknown model kind: {kind}")
+    if kind == "majority":
+        return Pipeline([("classifier", DummyClassifier(strategy="most_frequent"))])
+
+    transformers: list[tuple[str, Any, str | list[str]]] = [
+        (
+            "word",
+            TfidfVectorizer(
+                strip_accents="unicode",
+                ngram_range=(1, 2),
+                min_df=2,
+                max_df=0.98,
+                max_features=max_features,
+                sublinear_tf=True,
             ),
+            "text",
+        )
+    ]
+    if kind in {"word_char", "entity_word_char"}:
+        transformers.append(
             (
                 "character",
                 TfidfVectorizer(
@@ -56,10 +82,24 @@ def build_pipeline(*, max_features: int = 40_000, random_state: int = 42) -> Pip
                     max_features=max_features,
                     sublinear_tf=True,
                 ),
-            ),
-        ]
+                "text",
+            )
+        )
+    if kind == "entity_word_char":
+        transformers.append(
+            (
+                "entity",
+                OneHotEncoder(handle_unknown="ignore"),
+                ["entity"],
+            )
+        )
+
+    features = ColumnTransformer(
+        transformers,
+        sparse_threshold=1.0,
     )
     classifier = LogisticRegression(
+        C=regularization,
         max_iter=1_000,
         class_weight="balanced",
         random_state=random_state,
@@ -74,6 +114,7 @@ def select_model(
     max_features: int = 40_000,
     random_state: int = 42,
     jobs: int = -1,
+    kind: ModelKind = "entity_word_char",
 ) -> TrainingResult:
     """Select regularization strength using grouped CV on training data only."""
 
@@ -85,7 +126,11 @@ def select_model(
         random_state=random_state,
     )
     search = GridSearchCV(
-        estimator=build_pipeline(max_features=max_features, random_state=random_state),
+        estimator=build_pipeline(
+            kind=kind,
+            max_features=max_features,
+            random_state=random_state,
+        ),
         param_grid={"classifier__C": [0.5, 1.0, 2.0]},
         scoring="f1_macro",
         cv=cross_validation,
@@ -93,7 +138,11 @@ def select_model(
         refit=True,
         return_train_score=False,
     )
-    search.fit(train["text"], train["sentiment"], groups=leakage_groups(train))
+    search.fit(
+        train[MODEL_INPUT_COLUMNS],
+        train["sentiment"],
+        groups=leakage_groups(train),
+    )
     return TrainingResult(
         model=search.best_estimator_,
         best_parameters=search.best_params_,
@@ -105,7 +154,7 @@ def evaluate(model: Pipeline, test: pd.DataFrame) -> dict[str, Any]:
     """Evaluate a frozen model once on the untouched group holdout."""
 
     actual = test["sentiment"]
-    predicted = model.predict(test["text"])
+    predicted = model.predict(test[MODEL_INPUT_COLUMNS])
     return {
         "accuracy": float(accuracy_score(actual, predicted)),
         "macro_precision": float(

@@ -54,6 +54,11 @@ def _predict_parser() -> argparse.ArgumentParser:
         type=Path,
         default=Path("artifacts/sentiment_model.joblib"),
     )
+    parser.add_argument(
+        "--entity",
+        default="Unknown",
+        help="Entity targeted by every supplied text (unknown entities are supported).",
+    )
     parser.add_argument("text", nargs="+", help="One or more texts to classify.")
     return parser
 
@@ -94,6 +99,7 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
         "dataset": profile.to_dict(),
         "split": split_diagnostics(train, holdout),
         "selection": {
+            "architecture": "entity_word_char",
             "best_parameters": selected.best_parameters,
             "best_cv_macro_f1": selected.best_cv_macro_f1,
         },
@@ -131,12 +137,13 @@ def predict_command(argv: Sequence[str] | None = None) -> None:
     """Console entry point for batch prediction."""
 
     args = _predict_parser().parse_args(argv)
-    labels = predict(args.model, args.text)
+    entities = [args.entity] * len(args.text)
+    labels = predict(args.model, args.text, entities=entities)
     print(
         json.dumps(
             [
-                {"text": text, "sentiment": label}
-                for text, label in zip(args.text, labels, strict=True)
+                {"entity": entity, "text": text, "sentiment": label}
+                for entity, text, label in zip(entities, args.text, labels, strict=True)
             ],
             indent=2,
             ensure_ascii=False,
