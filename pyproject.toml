@@ -44,6 +44,7 @@ dev = [
 [project.scripts]
 sentiment-train = "sentiment_analysis.cli:train_command"
 sentiment-predict = "sentiment_analysis.cli:predict_command"
+sentiment-benchmark = "sentiment_analysis.benchmark_cli:benchmark_command"
 
 [project.urls]
 Repository = "https://github.com/kristishqau/SentimentAnalysis_NLP"

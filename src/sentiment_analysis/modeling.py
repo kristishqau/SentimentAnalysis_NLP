@@ -120,6 +120,8 @@ def select_model(
 
     if cv_splits < 2:
         raise ValueError("cv_splits must be at least 2")
+    if kind == "majority":
+        raise ValueError("The majority baseline has no regularization to select")
     cross_validation = StratifiedGroupKFold(
         n_splits=cv_splits,
         shuffle=True,
@@ -155,6 +157,12 @@ def evaluate(model: Pipeline, test: pd.DataFrame) -> dict[str, Any]:
 
     actual = test["sentiment"]
     predicted = model.predict(test[MODEL_INPUT_COLUMNS])
+    return classification_metrics(actual, predicted)
+
+
+def classification_metrics(actual: Any, predicted: Any) -> dict[str, Any]:
+    """Return the project's consistent multiclass metric suite."""
+
     return {
         "accuracy": float(accuracy_score(actual, predicted)),
         "macro_precision": float(
@@ -163,7 +171,9 @@ def evaluate(model: Pipeline, test: pd.DataFrame) -> dict[str, Any]:
         "macro_recall": float(
             recall_score(actual, predicted, labels=LABELS, average="macro", zero_division=0)
         ),
-        "macro_f1": float(f1_score(actual, predicted, labels=LABELS, average="macro")),
+        "macro_f1": float(
+            f1_score(actual, predicted, labels=LABELS, average="macro", zero_division=0)
+        ),
         "classification_report": classification_report(
             actual,
             predicted,
