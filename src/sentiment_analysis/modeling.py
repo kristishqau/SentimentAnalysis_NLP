@@ -19,7 +19,7 @@ from sklearn.metrics import (
 from sklearn.model_selection import GridSearchCV, StratifiedGroupKFold
 from sklearn.pipeline import FeatureUnion, Pipeline
 
-from sentiment_analysis.data import LABELS
+from sentiment_analysis.data import LABELS, leakage_groups
 
 
 @dataclass(frozen=True)
@@ -93,7 +93,7 @@ def select_model(
         refit=True,
         return_train_score=False,
     )
-    search.fit(train["text"], train["sentiment"], groups=train["tweet_id"])
+    search.fit(train["text"], train["sentiment"], groups=leakage_groups(train))
     return TrainingResult(
         model=search.best_estimator_,
         best_parameters=search.best_params_,

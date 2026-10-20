@@ -83,6 +83,39 @@ def load_dataset(path: str | Path) -> tuple[pd.DataFrame, DatasetProfile]:
     return frame, profile
 
 
+def leakage_groups(frame: pd.DataFrame) -> pd.Series:
+    """Build connected groups that bind shared tweet IDs or exact text.
+
+    A simple tweet-ID group is insufficient because this dataset also repeats
+    identical text under different IDs. Connected components prevent either
+    relationship from crossing evaluation or cross-validation boundaries.
+    """
+
+    parent: dict[str, str] = {}
+
+    def find(node: str) -> str:
+        parent.setdefault(node, node)
+        while parent[node] != node:
+            parent[node] = parent[parent[node]]
+            node = parent[node]
+        return node
+
+    def union(left: str, right: str) -> None:
+        left_root = find(left)
+        right_root = find(right)
+        if left_root != right_root:
+            parent[right_root] = left_root
+
+    row_keys: list[str] = []
+    for tweet_id, text in frame[["tweet_id", "text"]].itertuples(index=False, name=None):
+        id_key = f"id:{tweet_id}"
+        text_hash = hashlib.sha256(str(text).encode("utf-8")).hexdigest()
+        text_key = f"text:{text_hash}"
+        union(id_key, text_key)
+        row_keys.append(id_key)
+    return pd.Series((find(key) for key in row_keys), index=frame.index, dtype="string")
+
+
 def stratified_group_holdout(
     frame: pd.DataFrame,
     *,
@@ -102,15 +135,17 @@ def stratified_group_holdout(
         shuffle=True,
         random_state=random_state,
     )
-    train_indices, test_indices = next(
-        splitter.split(frame["text"], frame["sentiment"], groups=frame["tweet_id"])
-    )
+    groups = leakage_groups(frame)
+    train_indices, test_indices = next(splitter.split(frame["text"], frame["sentiment"], groups))
     train = frame.iloc[train_indices].reset_index(drop=True)
     test = frame.iloc[test_indices].reset_index(drop=True)
 
     overlap = set(train["tweet_id"]) & set(test["tweet_id"])
     if overlap:  # Defensive invariant: a future splitter change must not leak groups.
         raise RuntimeError(f"Group leakage detected for {len(overlap)} tweet IDs")
+    text_overlap = set(train["text"]) & set(test["text"])
+    if text_overlap:
+        raise RuntimeError(f"Text leakage detected for {len(text_overlap)} exact texts")
     return train, test
 
 

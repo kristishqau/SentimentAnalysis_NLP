@@ -80,9 +80,13 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
         "created_at_utc": datetime.now(UTC).isoformat(),
         "protocol": {
             "random_seed": args.seed,
-            "holdout_strategy": "first fold of shuffled StratifiedGroupKFold by tweet_id",
+            "holdout_strategy": (
+                "first fold of shuffled StratifiedGroupKFold by connected tweet_id/exact-text group"
+            ),
             "holdout_folds": args.holdout_folds,
-            "selection_strategy": "GridSearchCV with StratifiedGroupKFold by tweet_id",
+            "selection_strategy": (
+                "GridSearchCV with StratifiedGroupKFold by connected tweet_id/exact-text group"
+            ),
             "cross_validation_folds": args.cv_folds,
             "selection_metric": "macro_f1",
             "holdout_used_for_selection": False,

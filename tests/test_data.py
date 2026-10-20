@@ -7,6 +7,7 @@ import pytest
 
 from sentiment_analysis.data import (
     COLUMNS,
+    leakage_groups,
     load_dataset,
     split_diagnostics,
     stratified_group_holdout,
@@ -47,6 +48,9 @@ def test_load_dataset_rejects_missing_file_and_unknown_label(tmp_path: Path) -> 
 
 
 def test_group_holdout_has_no_id_leakage(sample_frame: pd.DataFrame) -> None:
+    duplicate = sample_frame.iloc[[0]].copy()
+    duplicate["tweet_id"] = "different-id-same-text"
+    sample_frame = pd.concat([sample_frame, duplicate], ignore_index=True)
     train, test = stratified_group_holdout(sample_frame, n_splits=2, random_state=7)
     diagnostics = split_diagnostics(train, test)
 
@@ -54,6 +58,16 @@ def test_group_holdout_has_no_id_leakage(sample_frame: pd.DataFrame) -> None:
     assert diagnostics["exact_text_overlap"] == 0
     assert diagnostics["train_rows"] + diagnostics["test_rows"] == len(sample_frame)
     assert set(train["sentiment"]) == set(test["sentiment"])
+
+
+def test_leakage_groups_connect_ids_and_exact_text(sample_frame: pd.DataFrame) -> None:
+    frame = sample_frame.iloc[:3].copy().reset_index(drop=True)
+    frame.loc[2, "tweet_id"] = "different-id"
+    frame.loc[2, "text"] = frame.loc[0, "text"]
+
+    groups = leakage_groups(frame)
+
+    assert groups.nunique() == 1
 
 
 def test_group_holdout_validates_arguments(sample_frame: pd.DataFrame) -> None:
