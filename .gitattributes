@@ -1,1 +1,9 @@
-*.ipynb linguist-language=Python
+*.py text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+.editorconfig text eol=lf
+.gitignore text eol=lf
+*.ipynb text eol=lf linguist-language=Python

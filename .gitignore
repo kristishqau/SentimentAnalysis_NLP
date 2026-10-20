@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *.pyo
+*.egg-info/
+build/
+dist/
 
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
@@ -19,3 +22,12 @@ Thumbs.db
 # Model files
 *.pkl
 *.joblib
+artifacts/
+
+# Test, coverage, and tooling caches
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
