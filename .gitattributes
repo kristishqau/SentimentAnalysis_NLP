@@ -7,4 +7,5 @@
 *.yaml text eol=lf
 .editorconfig text eol=lf
 .gitignore text eol=lf
+uv.lock text eol=lf
 *.ipynb text eol=lf linguist-language=Python

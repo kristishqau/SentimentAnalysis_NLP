@@ -51,12 +51,14 @@ Requires Python 3.10 or newer.
 ```bash
 git clone https://github.com/kristishqau/SentimentAnalysis_NLP.git
 cd SentimentAnalysis_NLP
-python -m venv .venv
+uv sync --locked --all-extras
 ```
 
-Activate the environment (`.venv\Scripts\activate` on Windows or `source .venv/bin/activate` on macOS/Linux), then install:
+This uses the checked-in `uv.lock` to reproduce the complete development and notebook environment. A conventional pip installation remains supported:
 
 ```bash
+python -m venv .venv
+# Activate .venv, then:
 python -m pip install --upgrade pip
 python -m pip install -e ".[dev,notebook]"
 ```
@@ -64,7 +66,7 @@ python -m pip install -e ".[dev,notebook]"
 Train with the audited defaults:
 
 ```bash
-sentiment-train
+uv run sentiment-train
 ```
 
 The command writes a trusted local pipeline to `artifacts/sentiment_model.joblib` and complete evidence to `artifacts/metrics.json`. Training is CPU-intensive because it performs nine grouped-CV fits.
@@ -72,7 +74,7 @@ The command writes a trusted local pipeline to `artifacts/sentiment_model.joblib
 Predict one or more texts:
 
 ```bash
-sentiment-predict --model artifacts/sentiment_model.joblib "The update is excellent" "The service is frustrating and broken"
+uv run sentiment-predict --model artifacts/sentiment_model.joblib "The update is excellent" "The service is frustrating and broken"
 ```
 
 `joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
@@ -86,10 +88,10 @@ sentiment-predict --model artifacts/sentiment_model.joblib "The update is excell
 Run the same local gates as CI:
 
 ```bash
-ruff check src tests
-ruff format --check src tests
-pytest
-pip-audit
+uv run ruff check src tests notebooks
+uv run ruff format --check src tests notebooks
+uv run pytest
+uv run pip-audit
 ```
 
 ## Repository layout
