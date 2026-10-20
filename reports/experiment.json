@@ -1,0 +1,78 @@
+{
+  "project_version": "1.0.0",
+  "created_at_utc": "2026-10-20T18:44:24.182371+00:00",
+  "protocol": {
+    "random_seed": 42,
+    "holdout_strategy": "first fold of shuffled StratifiedGroupKFold by connected tweet_id/exact-text group",
+    "holdout_folds": 5,
+    "selection_strategy": "GridSearchCV with StratifiedGroupKFold by connected tweet_id/exact-text group",
+    "cross_validation_folds": 3,
+    "selection_metric": "macro_f1",
+    "holdout_used_for_selection": false
+  },
+  "dataset": {
+    "rows": 71117,
+    "unique_tweet_ids": 12447,
+    "entities": 32,
+    "class_counts": {
+      "Irrelevant": 12448,
+      "Negative": 21571,
+      "Neutral": 17541,
+      "Positive": 19557
+    },
+    "removed_missing_text": 858,
+    "removed_duplicate_rows": 2707,
+    "sha256": "68ebaee4f44bda5de49b96b5e5630184f1af894970b994aa6bb0aa5e1dbfe9a0"
+  },
+  "split": {
+    "train_rows": 56907,
+    "test_rows": 14210,
+    "train_tweet_ids": 9997,
+    "test_tweet_ids": 2450,
+    "tweet_id_overlap": 0,
+    "exact_text_overlap": 0,
+    "train_class_counts": {
+      "Irrelevant": 9962,
+      "Negative": 17259,
+      "Neutral": 14037,
+      "Positive": 15649
+    },
+    "test_class_counts": {
+      "Irrelevant": 2486,
+      "Negative": 4312,
+      "Neutral": 3504,
+      "Positive": 3908
+    }
+  },
+  "selection": {
+    "best_parameters": {"classifier__C": 0.5},
+    "best_cv_macro_f1": 0.5312639239957403
+  },
+  "holdout": {
+    "accuracy": 0.5559465165376496,
+    "macro_precision": 0.5395218056902844,
+    "macro_recall": 0.5400897804765126,
+    "macro_f1": 0.5396227460143429,
+    "classification_report": {
+      "Negative": {"precision": 0.6552527370137433, "recall": 0.6523654916512059, "f1-score": 0.6538059267867519, "support": 4312.0},
+      "Neutral": {"precision": 0.5153961136023917, "recall": 0.4920091324200913, "f1-score": 0.5034311578332603, "support": 3504.0},
+      "Positive": {"precision": 0.5877394636015326, "recall": 0.588792221084954, "f1-score": 0.5882653713409178, "support": 3908.0},
+      "Irrelevant": {"precision": 0.39969890854347007, "recall": 0.42719227674979887, "f1-score": 0.41298852809644176, "support": 2486.0},
+      "accuracy": 0.5559465165376496,
+      "macro avg": {"precision": 0.5395218056902844, "recall": 0.5400897804765126, "f1-score": 0.5396227460143429, "support": 14210.0},
+      "weighted avg": {"precision": 0.5574901544306754, "recall": 0.5559465165376496, "f1-score": 0.5565703367628627, "support": 14210.0}
+    },
+    "confusion_matrix": [
+      [2813, 543, 475, 481],
+      [581, 1724, 641, 558],
+      [465, 586, 2301, 556],
+      [434, 492, 498, 1062]
+    ],
+    "label_order": ["Negative", "Neutral", "Positive", "Irrelevant"]
+  },
+  "environment": {
+    "python": "3.12.0",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.9.1"
+  }
+}

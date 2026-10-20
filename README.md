@@ -1,86 +1,114 @@
-# SentimentAnalysisNLP
+# SentimentAnalysis_NLP
 
-## Overview
+[![Quality](https://github.com/kristishqau/SentimentAnalysis_NLP/actions/workflows/quality.yml/badge.svg)](https://github.com/kristishqau/SentimentAnalysis_NLP/actions/workflows/quality.yml)
+[![Python 3.10–3.13](https://img.shields.io/badge/python-3.10--3.13-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/code%20license-MIT-green.svg)](LICENSE)
 
-Welcome to the SentimentAnalysisNLP project! This repository contains a comprehensive sentiment analysis pipeline that processes and classifies tweets into different sentiment categories using Natural Language Processing (NLP) techniques and machine learning models.
+A production-minded, classical NLP baseline for four-class, entity-focused tweet sentiment. The project classifies text as **Negative**, **Neutral**, **Positive**, or **Irrelevant** while making data leakage, reproducibility, and artifact provenance first-class concerns.
 
-The goal of this project is to accurately classify tweets into one of four sentiment categories:
-- Positive
-- Negative
-- Neutral
-- Irrelevant
+The central result is not an inflated notebook score: it is a defensible evaluation protocol. Augmented variants in this dataset share tweet IDs, and some exact texts occur under different IDs. This implementation keeps every connected duplicate family inside one fold during holdout creation and model selection.
 
-![visualization1](https://github.com/user-attachments/assets/8145f959-1dcb-48ad-a32b-d0df11a4fc93)
+## Verified result
 
-## Features
+The checked-in experiment evidence records:
 
-- **Data Preprocessing**: Tokenization, lowercasing, punctuation removal, stopword removal, and lemmatization.
-- **Vectorization**: TF-IDF and Count Vectorizer methods.
-- **Machine Learning Models**: Logistic Regression, Random Forest, and XGBoost.
-- **Model Evaluation**: Accuracy, precision, recall, F1 score, ROC AUC score, and classification report.
-- **Visualization**: Word cloud and bar plot of the most common words.
-- **Saved Models**: Pre-trained models available for direct use.
+- **55.59% holdout accuracy** and **53.96% macro-F1** on 14,210 untouched rows.
+- **53.13% grouped-CV macro-F1** for the selected `C=0.5` model.
+- **0 shared tweet IDs** and **0 exact shared texts** across train and holdout.
+- A deterministic seed, input SHA-256, cleaning counts, split facts, package versions, per-class metrics, and confusion matrix.
 
-## Installation
+This score is intentionally lower than the original notebook's 84.9% random-split result. That older approach allowed related augmented samples to cross the boundary and selected models against its test set. See the [model card](reports/MODEL_CARD.md) and [machine-readable experiment](reports/experiment.json) for the full evidence.
 
-### Prerequisites
+## Engineering highlights
 
-- Python 3.6 or higher
-- pip (Python package installer)
+- End-to-end scikit-learn pipeline: word `(1, 2)` and character `(3, 5)` TF-IDF features plus balanced logistic regression.
+- Leakage-safe connected grouping over both tweet ID and exact-text hash.
+- Grouped, stratified cross-validation for hyperparameter selection; holdout used once.
+- Versioned model artifact containing preprocessing, classifier, and experiment metadata together.
+- Installable `src/` package with train and predict CLIs.
+- 95% branch coverage, Ruff quality gates, Python 3.10–3.13 CI, dependency auditing, and Dependabot.
 
-### Clone the Repository
-
-```sh
-git clone https://github.com/Chralsh/SentimentAnalysisNLP.git
-cd SentimentAnalysisNLP
+```text
+headerless CSV
+    │
+    ├── schema validation + cleaning + SHA-256 provenance
+    │
+    └── connected duplicate groups (tweet ID ∪ exact text)
+            │
+            ├── untouched 20% holdout ───────────────┐
+            │                                         │ evaluate once
+            └── 80% development set                  ▼
+                    └── grouped CV → TF-IDF → logistic regression
+                                              │
+                                              ├── versioned model artifact
+                                              └── reproducible metrics JSON
 ```
 
-### Install Dependencies
+## Quick start
 
-Install the required Python packages using the `requirements.txt` file.
+Requires Python 3.10 or newer.
 
-```sh
-pip install -r requirements.txt
+```bash
+git clone https://github.com/kristishqau/SentimentAnalysis_NLP.git
+cd SentimentAnalysis_NLP
+python -m venv .venv
 ```
 
-## Usage
+Activate the environment (`.venv\Scripts\activate` on Windows or `source .venv/bin/activate` on macOS/Linux), then install:
 
-### Data Preparation
-
-Ensure you have your datasets in the `data` directory. You should have two CSV files: `twitter_training.csv` and `twitter_validation.csv`.
-
-### Running the Jupyter Notebook
-
-Launch Jupyter Notebook and open the `SentimentAnalysisNLP.ipynb` file located in the `notebooks` directory.
-
-```sh
-jupyter notebook notebooks/SentimentAnalysisNLP.ipynb
+```bash
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev,notebook]"
 ```
 
-### Training and Evaluating Models
+Train with the audited defaults:
 
-Follow the steps in the notebook to:
+```bash
+sentiment-train
+```
 
-- **Preprocess the data:** Clean and process the tweet text.
-- **Visualize the data:** Generate word clouds and bar plots for common words.
-- **Vectorize the text:** Transform text data using TF-IDF and Count Vectorizer.
-- **Train and evaluate models:** Train Logistic Regression, Random Forest, and XGBoost models. Evaluate their performance using various metrics.
-- **Save and load models:** Save the trained models to the models directory and load them for predictions.
+The command writes a trusted local pipeline to `artifacts/sentiment_model.joblib` and complete evidence to `artifacts/metrics.json`. Training is CPU-intensive because it performs nine grouped-CV fits.
 
-![wordcloud](https://github.com/user-attachments/assets/830bf0b4-7943-49a6-b52f-1454c543ec32)
+Predict one or more texts:
 
-### Making Predictions
+```bash
+sentiment-predict --model artifacts/sentiment_model.joblib "The update is excellent" "The service is frustrating and broken"
+```
 
-Use the trained models to make predictions on new tweet data. Example tweets and their sentiment predictions are provided in the notebook.
+`joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
 
-## Output form the best model
-![output](https://github.com/user-attachments/assets/227e7220-e337-46b5-8adf-fc5d2fd72f4e)
+## Explore and develop
 
-## Additional Information
+- [Exploration notebook](notebooks/sentiment_analysis.ipynb) — compact EDA, leakage demonstration, split audit, and result visualization. It calls package code instead of duplicating training logic.
+- [Data card](reports/DATA_CARD.md) — provenance, schema, quality findings, responsible-use notes, and licensing boundary.
+- [Model card](reports/MODEL_CARD.md) — intended use, methodology, metrics, limitations, and ethical considerations.
 
-- **Code Comments:** Every step in the notebook is thoroughly commented. Each code cell contains comments explaining the purpose and functionality of the code.
-- **Multiple models and dataset processing used:** I used more than one specific workflow and model just to demonstrate different solutions and methods.
+Run the same local gates as CI:
 
-## Contributing
+```bash
+ruff check src tests
+ruff format --check src tests
+pytest
+pip-audit
+```
 
-I welcome contributions to the SentimentAnalysisNLP project! If you have any ideas, bug reports, or improvements, feel free to submit a pull request or open an issue.
+## Repository layout
+
+```text
+src/sentiment_analysis/   validated data, modeling, artifacts, and CLIs
+tests/                    invariant-focused unit and integration tests
+notebooks/                recruiter-friendly exploration and audit narrative
+reports/                  model card, data card, and experiment evidence
+data/                     source CSV files
+.github/                  CI and automated dependency maintenance
+```
+
+## Scope and limitations
+
+This is an educational portfolio project, not a moderation or decision-making system. The data contains offensive language, platform-specific entities, mislabeled or ambiguous examples, duplicated augmentations, and historical social-media language. Performance—especially for **Irrelevant**—is not adequate for high-impact use. Do not infer emotions, intent, identity, mental state, or personal traits from predictions.
+
+The MIT license covers project code and documentation. Dataset rights are governed separately by the [Kaggle dataset source](https://www.kaggle.com/datasets/jp797498e/twitter-entity-sentiment-analysis); review its current terms before redistribution or commercial use.
+
+## License
+
+Code and documentation are available under the [MIT License](LICENSE). Dataset licensing is separate as noted above.
