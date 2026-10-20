@@ -40,6 +40,7 @@ def test_training_and_prediction_commands(
     assert summary["tweet_id_overlap"] == 0
     assert evidence["protocol"]["holdout_used_for_selection"] is False
     assert evidence["dataset"]["sha256"]
+    assert evidence["created_at_utc"].endswith("+00:00")
 
     predict_command(["--model", str(model_path), "awful broken frustrating"])
     predictions = json.loads(capsys.readouterr().out)
