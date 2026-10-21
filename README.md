@@ -93,6 +93,18 @@ uv run sentiment-analyze --output reports/error_analysis.json
 
 `joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
 
+Launch the dependency-free interactive demo after training or benchmarking:
+
+```bash
+uv run sentiment-demo --model artifacts/sentiment_model.joblib
+```
+
+Open `http://127.0.0.1:8000`. The demo includes entity-aware examples,
+uncalibrated confidence, responsible-use limitations, request-size validation, a
+content-security policy, and a `/healthz` endpoint. It binds to localhost by default;
+do not expose it publicly without authentication, TLS, rate limiting, and production
+hardening.
+
 ## Explore and develop
 
 - [Exploration notebook](notebooks/sentiment_analysis.ipynb) — compact EDA, leakage demonstration, split audit, and result visualization. It calls package code instead of duplicating training logic.
@@ -113,7 +125,7 @@ uv run pip-audit
 ## Repository layout
 
 ```text
-src/sentiment_analysis/   validated data, modeling, artifacts, and CLIs
+src/sentiment_analysis/   data, modeling, evaluation, artifacts, CLIs, and demo
 tests/                    invariant-focused unit and integration tests
 notebooks/                recruiter-friendly exploration and audit narrative
 reports/                  model card, data card, and experiment evidence

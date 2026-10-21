@@ -47,3 +47,8 @@ The model may reproduce dataset biases. Aggregate metrics can hide disparities f
 The primary evidence is stored in [`benchmark_v2.json`](benchmark_v2.json), including the input hash, cleaning counts, every fold's metrics and leakage diagnostics, uncertainty, selected parameters, timings, artifact sizes, and environment versions. Run `sentiment-benchmark` to reproduce it. [`experiment.json`](experiment.json) remains as historical v1 holdout evidence. Floating-point results and timings can vary across platforms and compatible dependency releases.
 
 The generated `joblib` artifact is intentionally excluded from Git because it is reproducible and binary. Joblib deserialization can execute arbitrary code; load only trusted artifacts.
+
+The local demo exposes maximum softmax probability as explicitly **uncalibrated**
+confidence. It is a portfolio interface, not a production service, and binds to
+localhost by default. Its health endpoint confirms artifact loading but does not imply
+fitness for high-impact use.

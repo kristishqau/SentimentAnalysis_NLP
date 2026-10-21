@@ -6,7 +6,12 @@ import joblib
 import pandas as pd
 import pytest
 
-from sentiment_analysis.artifacts import load_artifact, predict, save_artifact
+from sentiment_analysis.artifacts import (
+    load_artifact,
+    predict,
+    predict_with_confidence,
+    save_artifact,
+)
 from sentiment_analysis.data import stratified_group_holdout
 from sentiment_analysis.modeling import MODEL_KINDS, build_pipeline, evaluate, select_model
 
@@ -43,6 +48,13 @@ def test_model_selection_evaluation_and_round_trip(
         )[0]
         == "Positive"
     )
+    detailed = predict_with_confidence(
+        path,
+        ["excellent delightful amazing"],
+        entities=["UnseenEntity"],
+    )[0]
+    assert detailed["sentiment"] == "Positive"
+    assert 0.0 <= detailed["confidence"] <= 1.0
 
 
 def test_artifact_validation(tmp_path: Path) -> None:

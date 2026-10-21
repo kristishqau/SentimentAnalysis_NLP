@@ -53,12 +53,39 @@ def predict(
 ) -> list[str]:
     """Predict sentiment labels with a trusted persisted pipeline."""
 
+    inputs = _prediction_frame(texts, entities)
+    artifact = load_artifact(path)
+    return artifact["model"].predict(inputs).tolist()
+
+
+def predict_with_confidence(
+    path: str | Path,
+    texts: list[str],
+    *,
+    entities: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    """Predict labels and uncalibrated maximum class probabilities."""
+
+    inputs = _prediction_frame(texts, entities)
+    model = load_artifact(path)["model"]
+    probabilities = model.predict_proba(inputs)
+    indices = probabilities.argmax(axis=1)
+    return [
+        {
+            "entity": str(inputs.iloc[index]["entity"]),
+            "text": str(inputs.iloc[index]["text"]),
+            "sentiment": str(model.classes_[class_index]),
+            "confidence": float(probabilities[index, class_index]),
+        }
+        for index, class_index in enumerate(indices)
+    ]
+
+
+def _prediction_frame(texts: list[str], entities: list[str] | None) -> pd.DataFrame:
     if not texts or any(not text.strip() for text in texts):
         raise ValueError("At least one non-empty text is required")
     if entities is None:
         entities = ["Unknown"] * len(texts)
     if len(entities) != len(texts):
         raise ValueError("entities and texts must have the same length")
-    inputs = pd.DataFrame({"entity": entities, "text": texts})
-    artifact = load_artifact(path)
-    return artifact["model"].predict(inputs).tolist()
+    return pd.DataFrame({"entity": entities, "text": texts})
