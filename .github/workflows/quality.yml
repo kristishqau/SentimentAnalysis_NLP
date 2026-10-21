@@ -85,8 +85,18 @@ jobs:
             sentiment-demo:test
       - name: Verify health and inference
         run: |
-          curl --fail --retry 10 --retry-delay 1 --retry-connrefused http://127.0.0.1:8000/healthz
-          curl --fail --request POST http://127.0.0.1:8000/api/predict \
+          for attempt in {1..30}; do
+            container_health="$(docker inspect --format '{{.State.Health.Status}}' sentiment-demo)"
+            if [ "$container_health" = "healthy" ]; then break; fi
+            if [ "$container_health" = "unhealthy" ]; then
+              docker logs sentiment-demo
+              exit 1
+            fi
+            sleep 1
+          done
+          test "$container_health" = "healthy"
+          curl --fail --retry 3 --retry-all-errors http://127.0.0.1:8000/healthz
+          curl --fail --retry 3 --retry-all-errors --request POST http://127.0.0.1:8000/api/predict \
             --header "Content-Type: application/json" \
             --data '{"entity":"ExampleEntity","text":"excellent delightful amazing"}' \
             | grep 'Positive'
