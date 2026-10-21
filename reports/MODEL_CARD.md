@@ -14,7 +14,7 @@ It is not designed for production moderation or decisions about people. Do not u
 
 ## Training and evaluation protocol
 
-After schema validation, records with unusable text and exact duplicate rows are removed. Connected components link records that share either a tweet ID or exact text. V2 compares four architectures with shuffled five-fold outer `StratifiedGroupKFold` using seed 42. Within every non-trivial candidate and outer fold, three-fold grouped cross-validation chooses logistic-regression `C` from `0.5`, `1.0`, and `2.0` by macro-F1.
+After schema validation, records with unusable text and exact duplicate rows are removed. Connected components link records that share a tweet ID, exact text, or conservatively normalized near-duplicate text. V2 compares four architectures with shuffled five-fold outer `StratifiedGroupKFold` using seed 42. Within every non-trivial candidate and outer fold, three-fold grouped cross-validation chooses logistic-regression `C` from `0.5`, `1.0`, and `2.0` by macro-F1.
 
 All learned feature extraction occurs inside the cross-validated pipeline. Each outer test fold is excluded from vectorizer fitting, model fitting, and hyperparameter selection. After evaluation, the winning architecture is tuned and fitted on every usable row to produce the inference artifact.
 
@@ -25,11 +25,12 @@ Run completed: 2026-10-21. Environment: Python 3.12.0, pandas 2.3.3, scikit-lear
 - Usable rows: 71,117 across 12,447 tweet IDs and 32 entities.
 - Shared tweet IDs in every outer fold: 0.
 - Shared exact texts in every outer fold: 0.
+- Shared normalized near-duplicate texts in every outer fold: 0.
 - Selected regularization: `C=0.5`.
-- Mean outer-fold accuracy: 0.5834 (standard deviation 0.0088).
-- Mean outer-fold macro-F1: 0.5713 (standard deviation 0.0084).
-- Mean per-class F1: Negative 0.6672; Positive 0.5913; Neutral 0.5529; Irrelevant 0.4739.
-- Improvement over word+character without entity context: 0.0255 macro-F1.
+- Mean outer-fold accuracy: 0.5811 (standard deviation 0.0095).
+- Mean outer-fold macro-F1: 0.5686 (standard deviation 0.0090).
+- Mean per-class F1: Negative 0.6648; Positive 0.5867; Neutral 0.5540; Irrelevant 0.4689.
+- Improvement over word+character without entity context: 0.0268 macro-F1.
 
 See the [v2 benchmark report](BENCHMARK.md) for every baseline and the runtime caveat. These results should not be compared directly with the legacy notebook's 84.9% score because that experiment used a leaky row-random split and test-set model selection.
 

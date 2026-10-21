@@ -6,15 +6,15 @@
 
 A production-minded, classical NLP baseline for four-class, entity-focused tweet sentiment. The project classifies text as **Negative**, **Neutral**, **Positive**, or **Irrelevant** while making data leakage, reproducibility, and artifact provenance first-class concerns.
 
-The central result is not an inflated notebook score: it is a defensible evaluation protocol. Augmented variants in this dataset share tweet IDs, and some exact texts occur under different IDs. This implementation keeps every connected duplicate family inside one fold during holdout creation and model selection.
+The central result is not an inflated notebook score: it is a defensible evaluation protocol. Augmented variants in this dataset share tweet IDs, and text can recur under different IDs with exact or superficial formatting changes. This implementation keeps every connected duplicate family inside one fold during evaluation and model selection.
 
 ## Verified v2 result
 
 The checked-in experiment evidence records:
 
-- **58.34% ± 0.88% accuracy** and **57.13% ± 0.84% macro-F1** across five outer grouped folds.
-- **2.55 macro-F1 points gained** by entity context over the word+character candidate.
-- **0 shared tweet IDs** and **0 shared exact texts** in every outer fold.
+- **58.11% ± 0.95% accuracy** and **56.86% ± 0.90% macro-F1** across five outer grouped folds.
+- **2.68 macro-F1 points gained** by entity context over the word+character candidate.
+- **0 shared tweet IDs, exact texts, or normalized near-duplicate texts** in every outer fold.
 - Four comparable baselines, nested hyperparameter selection, fold-level metrics, runtime, artifact size, deterministic seed, input SHA-256, and package versions.
 
 This score is intentionally lower than the original notebook's 84.9% random-split result. That older approach allowed related augmented samples to cross the boundary and selected models against its test set. See the [benchmark narrative](reports/BENCHMARK.md), [model card](reports/MODEL_CARD.md), and [machine-readable fold evidence](reports/benchmark_v2.json).
@@ -22,7 +22,7 @@ This score is intentionally lower than the original notebook's 84.9% random-spli
 ## Engineering highlights
 
 - End-to-end scikit-learn pipeline: word `(1, 2)` and character `(3, 5)` TF-IDF, one-hot entity context, and balanced logistic regression.
-- Leakage-safe connected grouping over both tweet ID and exact-text hash.
+- Leakage-safe connected grouping over tweet ID, exact-text hash, and conservatively normalized text.
 - Nested grouped, stratified evaluation: five outer folds and three inner selection folds.
 - Versioned model artifact containing preprocessing, classifier, and experiment metadata together.
 - Installable `src/` package with train and predict CLIs.
@@ -33,7 +33,7 @@ headerless CSV
     │
     ├── schema validation + cleaning + SHA-256 provenance
     │
-    └── connected duplicate groups (tweet ID ∪ exact text)
+    └── connected duplicate groups (tweet ID ∪ exact text ∪ normalized text)
             │
             └── five outer grouped folds
                     ├── outer test fold → unbiased candidate score

@@ -5,7 +5,7 @@ This roadmap tracks the remaining work required to move the project from a well-
 ## Milestone 1 — Trustworthy foundation
 
 - [x] Package notebook code as an installable Python project.
-- [x] Prevent tweet-ID and exact-text leakage across folds.
+- [x] Prevent tweet-ID, exact-text, and normalized near-duplicate leakage across folds.
 - [x] Add CLI workflows, tests, coverage, CI, security auditing, and dependency updates.
 - [x] Publish honest v1 evidence, a data card, and a model card.
 - [x] Restore Python 3.10 compatibility.
@@ -28,7 +28,7 @@ Exit criterion: checked-in benchmark evidence showing why the selected architect
 - [ ] Produce per-class and per-entity metrics and worst-entity slices.
 - [ ] Export representative high-confidence errors for review.
 - [ ] Quantify text-length and entity-frequency effects.
-- [ ] Add semantic-near-duplicate diagnostics beyond exact matching.
+- [x] Add normalized near-duplicate diagnostics beyond exact matching.
 - [ ] Document whether bundled dataset redistribution is permitted; otherwise provide a verified download workflow.
 
 Exit criterion: an automated error-analysis report connected to specific next experiments.
