@@ -125,7 +125,7 @@ data/                     source CSV files
 
 This is an educational portfolio project, not a moderation or decision-making system. The data contains offensive language, platform-specific entities, mislabeled or ambiguous examples, duplicated augmentations, and historical social-media language. Performance—especially for **Irrelevant**—is not adequate for high-impact use. Do not infer emotions, intent, identity, mental state, or personal traits from predictions.
 
-The MIT license covers project code and documentation. Dataset rights are governed separately by the [Kaggle dataset source](https://www.kaggle.com/datasets/jp797498e/twitter-entity-sentiment-analysis); review its current terms before redistribution or commercial use.
+The MIT license covers project code and documentation. The source dataset is published as CC0/Public Domain; see the [dataset provenance, hashes, and rights boundary](data/README.md). Privacy, platform, and third-party-content obligations still require separate consideration.
 
 ## License
 

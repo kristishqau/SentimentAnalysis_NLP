@@ -37,4 +37,12 @@ Suitable uses include education, reproducible experimentation, and comparison of
 
 ## Licensing and provenance boundary
 
-The repository's MIT license covers code and project documentation, not third-party dataset rights. Kaggle hosts the source and controls its current terms. Users should verify the source page and applicable platform/data-subject requirements before redistributing the CSV files or using them commercially.
+The maintained Kaggle mirror identifies the source dataset as `CC0-1.0` / Public
+Domain, consistent with independent dataset indexes. This metadata was checked on
+2026-10-21. Exact hashes and source links are recorded in the
+[`data/` provenance note](../data/README.md).
+
+The repository's MIT license still covers only original code and project
+documentation; dataset licensing is a separate grant. CC0 metadata does not remove
+privacy, platform, third-party-content, removal-request, or applicable-law concerns.
+Users should reassess these obligations before commercial or user-facing use.

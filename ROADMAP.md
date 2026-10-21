@@ -29,7 +29,7 @@ Exit criterion: checked-in benchmark evidence showing why the selected architect
 - [x] Export one representative high-confidence error per connected family.
 - [x] Quantify text-length and entity-frequency effects.
 - [x] Add normalized near-duplicate diagnostics beyond exact matching.
-- [ ] Document whether bundled dataset redistribution is permitted; otherwise provide a verified download workflow.
+- [x] Document the dataset's published CC0 status, provenance, integrity hashes, and rights boundary.
 
 Exit criterion: an automated error-analysis report connected to specific next experiments.
 
