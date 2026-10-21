@@ -47,6 +47,6 @@ Exit criterion: reproducible classical-versus-transformer evidence.
 - [x] Add a safe local interactive demo with entity input, examples, uncalibrated confidence, limitations, input validation, and a health endpoint.
 - [x] Add a pinned, non-root container with CI-tested health and inference paths.
 - [x] Publish a verified demo screenshot and concise architecture/result narrative.
-- [ ] Run the final security, documentation, packaging, notebook, and repository audit.
+- [x] Run the final security, documentation, packaging, notebook, and repository audit.
 
 Exit criterion: a recruiter can understand, run, and interact with the project in under five minutes.
