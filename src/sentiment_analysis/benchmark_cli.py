@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import platform
+import sys
 from collections.abc import Sequence
 from datetime import datetime, timezone
 from importlib.metadata import version
@@ -60,8 +61,10 @@ def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
         max_features=args.max_features,
         random_state=args.seed,
         jobs=args.jobs,
+        progress=lambda message: print(message, file=sys.stderr, flush=True),
     )
     selected_kind = cast(ModelKind, evidence["selection"]["model_kind"])
+    print(f"Fitting final model: {selected_kind}", file=sys.stderr, flush=True)
     model, final_model = fit_selected_model(
         frame,
         kind=selected_kind,
@@ -86,6 +89,7 @@ def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
     args.report_output.parent.mkdir(parents=True, exist_ok=True)
     args.report_output.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
     save_artifact(args.model_output, model=model, metadata=evidence)
+    print("Benchmark report and final model written", file=sys.stderr, flush=True)
     return evidence
 
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import io
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from statistics import mean, stdev
 from time import perf_counter
 from typing import Any
@@ -85,6 +85,7 @@ def benchmark_models(
     max_features: int = 40_000,
     random_state: int = 42,
     jobs: int = -1,
+    progress: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     """Compare candidates with nested, connected-group cross-validation."""
 
@@ -106,6 +107,8 @@ def benchmark_models(
     candidates: dict[str, Any] = {}
 
     for kind in model_kinds:
+        if progress:
+            progress(f"Starting candidate: {kind}")
         fold_results: list[dict[str, Any]] = []
         for fold_number, (train_indices, test_indices) in enumerate(fold_indices, start=1):
             train = frame.iloc[train_indices].reset_index(drop=True)
@@ -144,6 +147,11 @@ def benchmark_models(
                     **metrics,
                 }
             )
+            if progress:
+                progress(
+                    f"Completed {kind} fold {fold_number}/{outer_splits}: "
+                    f"macro-F1={metrics['macro_f1']:.4f}"
+                )
         candidates[kind] = {
             "folds": fold_results,
             "summary": _summarize(fold_results),
@@ -153,6 +161,8 @@ def benchmark_models(
         model_kinds,
         key=lambda kind: candidates[kind]["summary"]["macro_f1"]["mean"],
     )
+    if progress:
+        progress(f"Selected candidate: {selected_kind}")
     return {
         "protocol": {
             "strategy": (

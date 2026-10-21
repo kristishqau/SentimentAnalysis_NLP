@@ -9,6 +9,7 @@ from sentiment_analysis.benchmarking import benchmark_models
 
 
 def test_benchmark_compares_models_without_group_leakage(sample_frame) -> None:
+    progress: list[str] = []
     evidence = benchmark_models(
         sample_frame,
         model_kinds=["majority", "word"],
@@ -16,10 +17,13 @@ def test_benchmark_compares_models_without_group_leakage(sample_frame) -> None:
         inner_splits=2,
         max_features=100,
         jobs=1,
+        progress=progress.append,
     )
 
     assert evidence["selection"]["model_kind"] == "word"
     assert set(evidence["candidates"]) == {"majority", "word"}
+    assert progress[0] == "Starting candidate: majority"
+    assert progress[-1] == "Selected candidate: word"
     for candidate in evidence["candidates"].values():
         assert len(candidate["folds"]) == 2
         assert candidate["summary"]["macro_f1"]["standard_deviation"] >= 0
