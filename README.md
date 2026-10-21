@@ -122,6 +122,18 @@ content-security policy, and a `/healthz` endpoint. It binds to localhost by def
 do not expose it publicly without authentication, TLS, rate limiting, and production
 hardening.
 
+For a reproducible container launch, first create the local model with
+`uv run sentiment-train`, then run:
+
+```bash
+docker compose up --build
+```
+
+The image uses digest-pinned Python and uv bases, installs from `uv.lock`, runs as a
+non-root user, and exposes a Docker health check. Compose binds only to localhost,
+mounts the trusted model read-only, drops Linux capabilities, and uses a read-only
+container filesystem. CI builds the image and verifies both health and inference.
+
 ## Explore and develop
 
 - [Exploration notebook](notebooks/sentiment_analysis.ipynb) — compact EDA, leakage demonstration, split audit, and result visualization. It calls package code instead of duplicating training logic.

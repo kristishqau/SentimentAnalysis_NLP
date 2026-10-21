@@ -45,7 +45,7 @@ Exit criterion: reproducible classical-versus-transformer evidence.
 ## Milestone 5 — Demonstration and delivery
 
 - [x] Add a safe local interactive demo with entity input, examples, uncalibrated confidence, limitations, input validation, and a health endpoint.
-- [ ] Add a health-tested container or equally reproducible launch path.
+- [x] Add a pinned, non-root container with CI-tested health and inference paths.
 - [ ] Publish screenshots and a concise architecture/result narrative.
 - [ ] Run the final security, documentation, packaging, notebook, and repository audit.
 
