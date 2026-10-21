@@ -30,7 +30,7 @@ dependencies = [
 
 [project.optional-dependencies]
 notebook = [
-  "ipykernel>=6.29,<7",
+  "ipykernel>=6.29,<8",
   "matplotlib>=3.8,<4",
   "seaborn>=0.13,<1",
 ]
@@ -43,7 +43,7 @@ dev = [
 ]
 transformer = [
   "accelerate>=1,<2",
-  "datasets>=4,<5",
+  "datasets>=4,<6",
   "torch>=2.2,<3",
   "transformers>=5,<6",
 ]
