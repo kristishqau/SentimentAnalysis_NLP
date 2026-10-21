@@ -6,6 +6,8 @@
 
 A production-minded, classical NLP baseline for four-class, entity-focused tweet sentiment. The project classifies text as **Negative**, **Neutral**, **Positive**, or **Irrelevant** while making data leakage, reproducibility, and artifact provenance first-class concerns.
 
+![Entity Sentiment Lab demo](docs/images/demo.png)
+
 The central result is not an inflated notebook score: it is a defensible evaluation protocol. Augmented variants in this dataset share tweet IDs, and text can recur under different IDs with exact or superficial formatting changes. This implementation keeps every connected duplicate family inside one fold during evaluation and model selection.
 
 ## Verified v2 result
@@ -26,7 +28,10 @@ This score is intentionally lower than the original notebook's 84.9% random-spli
 - Nested grouped, stratified evaluation: five outer folds and three inner selection folds.
 - Versioned model artifact containing preprocessing, classifier, and experiment metadata together.
 - Installable `src/` package with train and predict CLIs.
-- 95% branch coverage, Ruff quality gates, Python 3.10–3.13 CI, dependency auditing, and Dependabot.
+- An enforced 85% branch-coverage floor, Ruff quality gates, Python 3.10–3.13 CI, dependency auditing, and Dependabot.
+
+See the [architecture and engineering narrative](docs/ARCHITECTURE.md) for the system
+boundaries, core design decisions, evidence trail, and an interview-ready walkthrough.
 
 ```text
 headerless CSV
@@ -159,6 +164,7 @@ src/sentiment_analysis/   data, modeling, evaluation, artifacts, CLIs, and demo
 tests/                    invariant-focused unit and integration tests
 notebooks/                recruiter-friendly exploration and audit narrative
 reports/                  model card, data card, and experiment evidence
+docs/                     architecture narrative and verified demo media
 data/                     source CSV files
 .github/                  CI and automated dependency maintenance
 ```
