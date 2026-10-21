@@ -30,6 +30,17 @@ def test_oof_error_analysis_covers_every_row(sample_frame) -> None:
     assert report["per_entity"][0]["entity"] == "ExampleEntity"
     assert progress[-1] == "Completed analysis fold 2/2"
 
+    duplicated_errors = predictions.copy()
+    duplicated_errors.loc[duplicated_errors.index[:2], "predicted"] = "Neutral"
+    duplicated_errors.loc[duplicated_errors.index[:2], "correct"] = False
+    duplicated_errors.loc[duplicated_errors.index[:2], "confidence"] = [0.99, 0.98]
+    duplicate_report = analyze_predictions(
+        duplicated_errors,
+        min_entity_rows=1,
+        max_errors=5,
+    )
+    assert len(duplicate_report["high_confidence_errors"]) == 1
+
 
 def test_analysis_validates_arguments_and_audits_variants(sample_frame) -> None:
     with pytest.raises(ValueError, match="at least 2"):

@@ -106,6 +106,7 @@ def analyze_predictions(
     if min_entity_rows < 1 or max_errors < 1:
         raise ValueError("min_entity_rows and max_errors must be positive")
     analyzed = predictions.copy()
+    analyzed["error_family"] = leakage_groups(analyzed)
     analyzed["text_length"] = analyzed["text"].str.len()
     analyzed["length_band"] = pd.cut(
         analyzed["text_length"],
@@ -136,7 +137,12 @@ def analyze_predictions(
         )
     analyzed["entity_frequency_band"] = analyzed["entity"].map(entity_bands)
 
-    errors = analyzed.loc[~analyzed["correct"]].nlargest(max_errors, "confidence")
+    errors = (
+        analyzed.loc[~analyzed["correct"]]
+        .sort_values("confidence", ascending=False)
+        .drop_duplicates("error_family")
+        .head(max_errors)
+    )
     confusion_pairs = (
         analyzed.loc[~analyzed["correct"]]
         .groupby(["sentiment", "predicted"])
