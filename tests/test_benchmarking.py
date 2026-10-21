@@ -25,6 +25,7 @@ def test_benchmark_compares_models_without_group_leakage(sample_frame) -> None:
         assert candidate["summary"]["macro_f1"]["standard_deviation"] >= 0
         assert all(fold["tweet_id_overlap"] == 0 for fold in candidate["folds"])
         assert all(fold["exact_text_overlap"] == 0 for fold in candidate["folds"])
+        assert all(fold["normalized_text_overlap"] == 0 for fold in candidate["folds"])
 
 
 def test_benchmark_rejects_invalid_configuration(sample_frame) -> None:

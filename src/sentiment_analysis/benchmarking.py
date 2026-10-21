@@ -13,7 +13,7 @@ import pandas as pd
 from sklearn.model_selection import StratifiedGroupKFold
 from sklearn.pipeline import Pipeline
 
-from sentiment_analysis.data import leakage_groups
+from sentiment_analysis.data import leakage_groups, normalized_group_text
 from sentiment_analysis.modeling import (
     MODEL_INPUT_COLUMNS,
     MODEL_KINDS,
@@ -133,6 +133,10 @@ def benchmark_models(
                     "test_rows": len(test),
                     "tweet_id_overlap": len(set(train["tweet_id"]) & set(test["tweet_id"])),
                     "exact_text_overlap": len(set(train["text"]) & set(test["text"])),
+                    "normalized_text_overlap": len(
+                        set(train["text"].map(normalized_group_text))
+                        & set(test["text"].map(normalized_group_text))
+                    ),
                     "best_parameters": best_parameters,
                     "fit_seconds": fit_seconds,
                     "predict_seconds": predict_seconds,
@@ -151,7 +155,9 @@ def benchmark_models(
     )
     return {
         "protocol": {
-            "strategy": "nested StratifiedGroupKFold by connected tweet_id/exact-text group",
+            "strategy": (
+                "nested StratifiedGroupKFold by connected tweet_id/exact/normalized-text group"
+            ),
             "outer_splits": outer_splits,
             "inner_splits": inner_splits,
             "random_seed": random_state,

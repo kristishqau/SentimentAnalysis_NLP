@@ -9,6 +9,8 @@ from sentiment_analysis.data import (
     COLUMNS,
     leakage_groups,
     load_dataset,
+    normalize_text,
+    normalized_group_text,
     split_diagnostics,
     stratified_group_holdout,
 )
@@ -56,18 +58,26 @@ def test_group_holdout_has_no_id_leakage(sample_frame: pd.DataFrame) -> None:
 
     assert diagnostics["tweet_id_overlap"] == 0
     assert diagnostics["exact_text_overlap"] == 0
+    assert diagnostics["normalized_text_overlap"] == 0
     assert diagnostics["train_rows"] + diagnostics["test_rows"] == len(sample_frame)
     assert set(train["sentiment"]) == set(test["sentiment"])
 
 
-def test_leakage_groups_connect_ids_and_exact_text(sample_frame: pd.DataFrame) -> None:
-    frame = sample_frame.iloc[:3].copy().reset_index(drop=True)
+def test_leakage_groups_connect_ids_and_near_duplicate_text(sample_frame: pd.DataFrame) -> None:
+    frame = sample_frame.iloc[:4].copy().reset_index(drop=True)
     frame.loc[2, "tweet_id"] = "different-id"
     frame.loc[2, "text"] = frame.loc[0, "text"]
+    frame.loc[3, "tweet_id"] = "another-id"
+    frame.loc[3, "text"] = frame.loc[0, "text"].upper() + "!!!"
 
     groups = leakage_groups(frame)
 
     assert groups.nunique() == 1
+
+
+def test_normalization_handles_surface_variation_without_collapsing_short_text() -> None:
+    assert normalize_text("Hi @Person, see HTTPS://EXAMPLE.COM/a!") == "hi <user> see <url>"
+    assert normalized_group_text("THE!!!") == "THE!!!"
 
 
 def test_group_holdout_validates_arguments(sample_frame: pd.DataFrame) -> None:

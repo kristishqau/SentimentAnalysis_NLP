@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Final
@@ -12,6 +13,11 @@ from sklearn.model_selection import StratifiedGroupKFold
 
 COLUMNS: Final = ("tweet_id", "entity", "sentiment", "text")
 LABELS: Final = ("Negative", "Neutral", "Positive", "Irrelevant")
+MIN_NORMALIZED_GROUP_LENGTH: Final = 10
+_URL_PATTERN: Final = re.compile(r"https?://\S+|www\.\S+", re.IGNORECASE)
+_MENTION_PATTERN: Final = re.compile(r"@\w+")
+_NON_WORD_PATTERN: Final = re.compile(r"[^\w<>]+", re.UNICODE)
+_WHITESPACE_PATTERN: Final = re.compile(r"\s+")
 
 
 @dataclass(frozen=True)
@@ -83,12 +89,29 @@ def load_dataset(path: str | Path) -> tuple[pd.DataFrame, DatasetProfile]:
     return frame, profile
 
 
+def normalize_text(text: str) -> str:
+    """Normalize superficial variation for conservative near-duplicate grouping."""
+
+    normalized = _URL_PATTERN.sub("<url>", text.casefold())
+    normalized = _MENTION_PATTERN.sub("<user>", normalized)
+    normalized = _NON_WORD_PATTERN.sub(" ", normalized)
+    return _WHITESPACE_PATTERN.sub(" ", normalized).strip()
+
+
+def normalized_group_text(text: str) -> str:
+    """Return a stable grouping value without collapsing very short generic text."""
+
+    normalized = normalize_text(text)
+    return normalized if len(normalized) >= MIN_NORMALIZED_GROUP_LENGTH else text
+
+
 def leakage_groups(frame: pd.DataFrame) -> pd.Series:
-    """Build connected groups that bind shared tweet IDs or exact text.
+    """Build connected groups over tweet IDs, exact text, and near-duplicate text.
 
     A simple tweet-ID group is insufficient because this dataset also repeats
-    identical text under different IDs. Connected components prevent either
-    relationship from crossing evaluation or cross-validation boundaries.
+    text under different IDs and with superficial formatting variation. Connected
+    components prevent any known duplicate relationship from crossing evaluation or
+    cross-validation boundaries.
     """
 
     parent: dict[str, str] = {}
@@ -112,6 +135,9 @@ def leakage_groups(frame: pd.DataFrame) -> pd.Series:
         text_hash = hashlib.sha256(str(text).encode("utf-8")).hexdigest()
         text_key = f"text:{text_hash}"
         union(id_key, text_key)
+        normalized = normalized_group_text(str(text))
+        normalized_hash = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+        union(id_key, f"normalized:{normalized_hash}")
         row_keys.append(id_key)
     return pd.Series((find(key) for key in row_keys), index=frame.index, dtype="string")
 
@@ -146,6 +172,13 @@ def stratified_group_holdout(
     text_overlap = set(train["text"]) & set(test["text"])
     if text_overlap:
         raise RuntimeError(f"Text leakage detected for {len(text_overlap)} exact texts")
+    normalized_overlap = set(train["text"].map(normalized_group_text)) & set(
+        test["text"].map(normalized_group_text)
+    )
+    if normalized_overlap:
+        raise RuntimeError(
+            f"Near-duplicate leakage detected for {len(normalized_overlap)} normalized texts"
+        )
     return train, test
 
 
@@ -154,6 +187,8 @@ def split_diagnostics(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, obje
 
     train_text = set(train["text"])
     test_text = set(test["text"])
+    train_normalized = set(train["text"].map(normalized_group_text))
+    test_normalized = set(test["text"].map(normalized_group_text))
     return {
         "train_rows": len(train),
         "test_rows": len(test),
@@ -161,6 +196,7 @@ def split_diagnostics(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, obje
         "test_tweet_ids": test["tweet_id"].nunique(),
         "tweet_id_overlap": len(set(train["tweet_id"]) & set(test["tweet_id"])),
         "exact_text_overlap": len(train_text & test_text),
+        "normalized_text_overlap": len(train_normalized & test_normalized),
         "train_class_counts": train["sentiment"].value_counts().sort_index().to_dict(),
         "test_class_counts": test["sentiment"].value_counts().sort_index().to_dict(),
     }
