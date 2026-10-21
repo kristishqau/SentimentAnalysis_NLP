@@ -40,6 +40,12 @@ dev = [
   "pytest-cov>=5,<8",
   "ruff>=0.6,<1",
 ]
+transformer = [
+  "accelerate>=1,<2",
+  "datasets>=4,<5",
+  "torch>=2.2,<3",
+  "transformers>=5,<6",
+]
 
 [project.scripts]
 sentiment-train = "sentiment_analysis.cli:train_command"
@@ -47,6 +53,7 @@ sentiment-predict = "sentiment_analysis.cli:predict_command"
 sentiment-benchmark = "sentiment_analysis.benchmark_cli:benchmark_command"
 sentiment-analyze = "sentiment_analysis.analysis_cli:analysis_command"
 sentiment-demo = "sentiment_analysis.demo:demo_command"
+sentiment-transformer-benchmark = "sentiment_analysis.transformer:transformer_command"
 
 [project.urls]
 Repository = "https://github.com/kristishqau/SentimentAnalysis_NLP"
@@ -71,6 +78,7 @@ testpaths = ["tests"]
 
 [tool.coverage.run]
 branch = true
+omit = ["src/sentiment_analysis/transformer.py"]
 
 [tool.coverage.report]
 fail_under = 85

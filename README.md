@@ -51,10 +51,10 @@ Requires Python 3.10 or newer.
 ```bash
 git clone https://github.com/kristishqau/SentimentAnalysis_NLP.git
 cd SentimentAnalysis_NLP
-uv sync --locked --all-extras
+uv sync --locked --extra dev --extra notebook
 ```
 
-This uses the checked-in `uv.lock` to reproduce the complete development and notebook environment. A conventional pip installation remains supported:
+This uses the checked-in `uv.lock` to reproduce the standard development and notebook environment without downloading the optional GPU stack. A conventional pip installation remains supported:
 
 ```bash
 python -m venv .venv
@@ -91,6 +91,23 @@ Generate group-isolated error slices for the selected architecture:
 uv run sentiment-analyze --output reports/error_analysis.json
 ```
 
+## Optional GPU benchmark
+
+The compact DistilBERT benchmark uses the identical connected outer folds and records
+quality, training time, inference time, and artifact size. Its PyTorch stack is
+isolated from the normal installation:
+
+```bash
+uv sync --locked --extra transformer
+uv run sentiment-transformer-benchmark --folds 5 --epochs 1
+```
+
+For a free GPU, use the
+[Colab-ready transformer notebook](notebooks/transformer_benchmark_colab.ipynb). It
+starts with a two-fold smoke test before the full five-fold evidence run. Transformer
+results are deliberately not claimed in this README until that GPU run completes and
+its JSON evidence is reviewed.
+
 `joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
 
 Launch the dependency-free interactive demo after training or benchmarking:
@@ -108,6 +125,7 @@ hardening.
 ## Explore and develop
 
 - [Exploration notebook](notebooks/sentiment_analysis.ipynb) — compact EDA, leakage demonstration, split audit, and result visualization. It calls package code instead of duplicating training logic.
+- [GPU benchmark notebook](notebooks/transformer_benchmark_colab.ipynb) — Colab workflow for the optional compact transformer comparison.
 - [Data card](reports/DATA_CARD.md) — provenance, schema, quality findings, responsible-use notes, and licensing boundary.
 - [Model card](reports/MODEL_CARD.md) — intended use, methodology, metrics, limitations, and ethical considerations.
 - [V2 benchmark](reports/BENCHMARK.md) — candidate comparison, protocol, decision, and timing caveat.

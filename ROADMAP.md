@@ -35,7 +35,7 @@ Exit criterion: an automated error-analysis report connected to specific next ex
 
 ## Milestone 4 — Modern benchmark
 
-- [ ] Add an optional compact transformer training/evaluation extra.
+- [x] Add an optional compact transformer extra, grouped benchmark CLI, and Colab GPU workflow.
 - [ ] Run it against the identical grouped folds.
 - [ ] Compare macro-F1, accuracy, training time, inference latency, and artifact size.
 - [ ] Document the quality/cost trade-off rather than assuming the largest model is best.
