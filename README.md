@@ -85,6 +85,12 @@ uv run sentiment-benchmark --jobs 2
 
 This audit path performs 150 nested fits and took about one hour of active wall time on the reference Windows laptop. Runtime is hardware-dependent; see the benchmark report's system-sleep timing caveat. Normal inference does not repeat the benchmark.
 
+Generate group-isolated error slices for the selected architecture:
+
+```bash
+uv run sentiment-analyze --output reports/error_analysis.json
+```
+
 `joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
 
 ## Explore and develop
@@ -93,6 +99,7 @@ This audit path performs 150 nested fits and took about one hour of active wall 
 - [Data card](reports/DATA_CARD.md) — provenance, schema, quality findings, responsible-use notes, and licensing boundary.
 - [Model card](reports/MODEL_CARD.md) — intended use, methodology, metrics, limitations, and ethical considerations.
 - [V2 benchmark](reports/BENCHMARK.md) — candidate comparison, protocol, decision, and timing caveat.
+- [Error analysis](reports/ERROR_ANALYSIS.md) — class, entity, length, frequency, confusion, and representative-error findings.
 
 Run the same local gates as CI:
 

@@ -38,6 +38,8 @@ See the [v2 benchmark report](BENCHMARK.md) for every baseline and the runtime c
 
 The weakest class is `Irrelevant`, and overall performance is insufficient for high-impact use. The classifier is trained on historical English social-media data about 32 entities and may fail on new entities, dialects, code-switching, sarcasm, reclaimed slurs, emerging vocabulary, or text that requires conversational context. Grouping blocks known exact/ID duplicates but cannot guarantee removal of every semantic near-duplicate.
 
+The [out-of-fold error analysis](ERROR_ANALYSIS.md) shows especially weak results for short messages and several entity slices. It also indicates that the flat target combines entity relevance with polarity and that some labels are plausibly ambiguous. Reported probabilities are not calibrated and must not be treated as reliable certainty.
+
 The model may reproduce dataset biases. Aggregate metrics can hide disparities for linguistic communities that are not identified in the data, so subgroup fairness cannot be established from this dataset.
 
 ## Reproducibility and artifacts

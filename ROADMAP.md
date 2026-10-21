@@ -25,9 +25,9 @@ Exit criterion: checked-in benchmark evidence showing why the selected architect
 
 ## Milestone 3 — Error analysis and data quality
 
-- [ ] Produce per-class and per-entity metrics and worst-entity slices.
-- [ ] Export representative high-confidence errors for review.
-- [ ] Quantify text-length and entity-frequency effects.
+- [x] Produce per-class and per-entity metrics and worst-entity slices.
+- [x] Export one representative high-confidence error per connected family.
+- [x] Quantify text-length and entity-frequency effects.
 - [x] Add normalized near-duplicate diagnostics beyond exact matching.
 - [ ] Document whether bundled dataset redistribution is permitted; otherwise provide a verified download workflow.
 

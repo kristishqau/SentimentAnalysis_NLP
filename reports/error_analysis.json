@@ -1,0 +1,709 @@
+{
+  "protocol_note": "Diagnostic out-of-fold predictions for the already selected architecture; do not treat this post-selection analysis as a new independent benchmark.",
+  "overall": {
+    "accuracy": 0.5810706300884458,
+    "macro_precision": 0.5681921396701974,
+    "macro_recall": 0.5693781879204429,
+    "macro_f1": 0.5686170986604829,
+    "classification_report": {
+      "Negative": {
+        "precision": 0.6653972971717829,
+        "recall": 0.6642251170553057,
+        "f1-score": 0.6648106904231625,
+        "support": 21571.0
+      },
+      "Neutral": {
+        "precision": 0.5584844447019292,
+        "recall": 0.5495695798415142,
+        "f1-score": 0.5539911499339119,
+        "support": 17541.0
+      },
+      "Positive": {
+        "precision": 0.5952568754272493,
+        "recall": 0.5788208825484481,
+        "f1-score": 0.5869238347073158,
+        "support": 19557.0
+      },
+      "Irrelevant": {
+        "precision": 0.45362994137982865,
+        "recall": 0.48489717223650386,
+        "f1-score": 0.4687427195775414,
+        "support": 12448.0
+      },
+      "accuracy": 0.5810706300884458,
+      "macro avg": {
+        "precision": 0.5681921396701974,
+        "recall": 0.5693781879204429,
+        "f1-score": 0.5686170986604829,
+        "support": 71117.0
+      },
+      "weighted avg": {
+        "precision": 0.5826720047926078,
+        "recall": 0.5810706300884458,
+        "f1-score": 0.5817395133762813,
+        "support": 71117.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        14328,
+        2586,
+        2240,
+        2417
+      ],
+      [
+        2750,
+        9640,
+        2948,
+        2203
+      ],
+      [
+        2384,
+        3203,
+        11320,
+        2650
+      ],
+      [
+        2071,
+        1832,
+        2509,
+        6036
+      ]
+    ],
+    "label_order": [
+      "Negative",
+      "Neutral",
+      "Positive",
+      "Irrelevant"
+    ]
+  },
+  "per_entity": [
+    {
+      "entity": "PlayerUnknownsBattlegrounds(PUBG)",
+      "rows": 2128,
+      "accuracy": 0.5046992481203008,
+      "macro_f1": 0.3847756573649994
+    },
+    {
+      "entity": "AssassinsCreed",
+      "rows": 2141,
+      "accuracy": 0.6637085474077534,
+      "macro_f1": 0.40467871660403004
+    },
+    {
+      "entity": "CallOfDutyBlackopsColdWar",
+      "rows": 2216,
+      "accuracy": 0.4733754512635379,
+      "macro_f1": 0.41685885007371176
+    },
+    {
+      "entity": "MaddenNFL",
+      "rows": 2301,
+      "accuracy": 0.781399391568883,
+      "macro_f1": 0.4242355544272786
+    },
+    {
+      "entity": "FIFA",
+      "rows": 2229,
+      "accuracy": 0.6047554957379991,
+      "macro_f1": 0.4272979072324327
+    },
+    {
+      "entity": "PlayStation5(PS5)",
+      "rows": 2169,
+      "accuracy": 0.48686030428769017,
+      "macro_f1": 0.43252232054026907
+    },
+    {
+      "entity": "Overwatch",
+      "rows": 2205,
+      "accuracy": 0.49705215419501136,
+      "macro_f1": 0.43402585676608474
+    },
+    {
+      "entity": "Amazon",
+      "rows": 2231,
+      "accuracy": 0.630658897355446,
+      "macro_f1": 0.4403434375203844
+    },
+    {
+      "entity": "Nvidia",
+      "rows": 2183,
+      "accuracy": 0.5991754466330738,
+      "macro_f1": 0.44658030442012886
+    },
+    {
+      "entity": "Facebook",
+      "rows": 2281,
+      "accuracy": 0.4993423936869794,
+      "macro_f1": 0.4479578902092445
+    },
+    {
+      "entity": "Fortnite",
+      "rows": 2159,
+      "accuracy": 0.5530338119499768,
+      "macro_f1": 0.4494707101736768
+    },
+    {
+      "entity": "Xbox(Xseries)",
+      "rows": 2170,
+      "accuracy": 0.4663594470046083,
+      "macro_f1": 0.44973794499057873
+    },
+    {
+      "entity": "Microsoft",
+      "rows": 2285,
+      "accuracy": 0.562363238512035,
+      "macro_f1": 0.45598013085811173
+    },
+    {
+      "entity": "Google",
+      "rows": 2184,
+      "accuracy": 0.49404761904761907,
+      "macro_f1": 0.4635869755269406
+    },
+    {
+      "entity": "GrandTheftAuto(GTA)",
+      "rows": 2198,
+      "accuracy": 0.5277525022747953,
+      "macro_f1": 0.46963812868892907
+    },
+    {
+      "entity": "RedDeadRedemption(RDR)",
+      "rows": 2142,
+      "accuracy": 0.6181139122315593,
+      "macro_f1": 0.47148114257614887
+    },
+    {
+      "entity": "CS-GO",
+      "rows": 2185,
+      "accuracy": 0.4782608695652174,
+      "macro_f1": 0.4752933384796413
+    },
+    {
+      "entity": "TomClancysGhostRecon",
+      "rows": 2262,
+      "accuracy": 0.6467727674624226,
+      "macro_f1": 0.4782745692956005
+    },
+    {
+      "entity": "Verizon",
+      "rows": 2300,
+      "accuracy": 0.5930434782608696,
+      "macro_f1": 0.4793618342590513
+    },
+    {
+      "entity": "HomeDepot",
+      "rows": 2204,
+      "accuracy": 0.5444646098003629,
+      "macro_f1": 0.48178588803823935
+    },
+    {
+      "entity": "TomClancysRainbowSix",
+      "rows": 2306,
+      "accuracy": 0.6808326105810928,
+      "macro_f1": 0.48391613986502535
+    },
+    {
+      "entity": "LeagueOfLegends",
+      "rows": 2285,
+      "accuracy": 0.5361050328227571,
+      "macro_f1": 0.4936354198421343
+    },
+    {
+      "entity": "johnson&johnson",
+      "rows": 2248,
+      "accuracy": 0.6650355871886121,
+      "macro_f1": 0.4960803154874933
+    },
+    {
+      "entity": "NBA2K",
+      "rows": 2293,
+      "accuracy": 0.7248146532926297,
+      "macro_f1": 0.5004028705971605
+    },
+    {
+      "entity": "Dota2",
+      "rows": 2217,
+      "accuracy": 0.534957149300857,
+      "macro_f1": 0.5040236524387111
+    },
+    {
+      "entity": "Hearthstone",
+      "rows": 2201,
+      "accuracy": 0.5715583825533849,
+      "macro_f1": 0.5113700978474601
+    },
+    {
+      "entity": "CallOfDuty",
+      "rows": 2295,
+      "accuracy": 0.5777777777777777,
+      "macro_f1": 0.5132162611271727
+    },
+    {
+      "entity": "Borderlands",
+      "rows": 2197,
+      "accuracy": 0.596267637687756,
+      "macro_f1": 0.5179855889907062
+    },
+    {
+      "entity": "Cyberpunk2077",
+      "rows": 2150,
+      "accuracy": 0.5688372093023256,
+      "macro_f1": 0.5286173808738343
+    },
+    {
+      "entity": "WorldOfCraft",
+      "rows": 2273,
+      "accuracy": 0.6449626044874615,
+      "macro_f1": 0.5425200585176306
+    },
+    {
+      "entity": "ApexLegends",
+      "rows": 2249,
+      "accuracy": 0.6318363717207648,
+      "macro_f1": 0.5446473736724943
+    },
+    {
+      "entity": "Battlefield",
+      "rows": 2230,
+      "accuracy": 0.6098654708520179,
+      "macro_f1": 0.5464391686626537
+    }
+  ],
+  "worst_entities": [
+    {
+      "entity": "PlayerUnknownsBattlegrounds(PUBG)",
+      "rows": 2128,
+      "accuracy": 0.5046992481203008,
+      "macro_f1": 0.3847756573649994
+    },
+    {
+      "entity": "AssassinsCreed",
+      "rows": 2141,
+      "accuracy": 0.6637085474077534,
+      "macro_f1": 0.40467871660403004
+    },
+    {
+      "entity": "CallOfDutyBlackopsColdWar",
+      "rows": 2216,
+      "accuracy": 0.4733754512635379,
+      "macro_f1": 0.41685885007371176
+    },
+    {
+      "entity": "MaddenNFL",
+      "rows": 2301,
+      "accuracy": 0.781399391568883,
+      "macro_f1": 0.4242355544272786
+    },
+    {
+      "entity": "FIFA",
+      "rows": 2229,
+      "accuracy": 0.6047554957379991,
+      "macro_f1": 0.4272979072324327
+    },
+    {
+      "entity": "PlayStation5(PS5)",
+      "rows": 2169,
+      "accuracy": 0.48686030428769017,
+      "macro_f1": 0.43252232054026907
+    },
+    {
+      "entity": "Overwatch",
+      "rows": 2205,
+      "accuracy": 0.49705215419501136,
+      "macro_f1": 0.43402585676608474
+    },
+    {
+      "entity": "Amazon",
+      "rows": 2231,
+      "accuracy": 0.630658897355446,
+      "macro_f1": 0.4403434375203844
+    },
+    {
+      "entity": "Nvidia",
+      "rows": 2183,
+      "accuracy": 0.5991754466330738,
+      "macro_f1": 0.44658030442012886
+    },
+    {
+      "entity": "Facebook",
+      "rows": 2281,
+      "accuracy": 0.4993423936869794,
+      "macro_f1": 0.4479578902092445
+    }
+  ],
+  "by_text_length": [
+    {
+      "length_band": "1-40",
+      "rows": 14126,
+      "accuracy": 0.541554580206711,
+      "macro_f1": 0.5091772176677216
+    },
+    {
+      "length_band": "41-80",
+      "rows": 16423,
+      "accuracy": 0.5780308104487609,
+      "macro_f1": 0.5610760965293787
+    },
+    {
+      "length_band": "81-160",
+      "rows": 23772,
+      "accuracy": 0.6139155308766616,
+      "macro_f1": 0.6033310647118003
+    },
+    {
+      "length_band": "161+",
+      "rows": 16796,
+      "accuracy": 0.5707906644439152,
+      "macro_f1": 0.5568771214834349
+    }
+  ],
+  "by_entity_frequency": [
+    {
+      "entity_frequency_band": "least_frequent",
+      "rows": 17242,
+      "accuracy": 0.5574759308664888,
+      "macro_f1": 0.5375823314323702
+    },
+    {
+      "entity_frequency_band": "low_frequency",
+      "rows": 17590,
+      "accuracy": 0.5228538942581012,
+      "macro_f1": 0.5121544710915521
+    },
+    {
+      "entity_frequency_band": "high_frequency",
+      "rows": 17939,
+      "accuracy": 0.6213278332125537,
+      "macro_f1": 0.5971738998258737
+    },
+    {
+      "entity_frequency_band": "most_frequent",
+      "rows": 18346,
+      "accuracy": 0.6196991169737273,
+      "macro_f1": 0.5533981390170186
+    }
+  ],
+  "confusion_pairs": [
+    {
+      "actual": "Positive",
+      "predicted": "Neutral",
+      "rows": 3203
+    },
+    {
+      "actual": "Neutral",
+      "predicted": "Positive",
+      "rows": 2948
+    },
+    {
+      "actual": "Neutral",
+      "predicted": "Negative",
+      "rows": 2750
+    },
+    {
+      "actual": "Positive",
+      "predicted": "Irrelevant",
+      "rows": 2650
+    },
+    {
+      "actual": "Negative",
+      "predicted": "Neutral",
+      "rows": 2586
+    },
+    {
+      "actual": "Irrelevant",
+      "predicted": "Positive",
+      "rows": 2509
+    },
+    {
+      "actual": "Negative",
+      "predicted": "Irrelevant",
+      "rows": 2417
+    },
+    {
+      "actual": "Positive",
+      "predicted": "Negative",
+      "rows": 2384
+    },
+    {
+      "actual": "Negative",
+      "predicted": "Positive",
+      "rows": 2240
+    },
+    {
+      "actual": "Neutral",
+      "predicted": "Irrelevant",
+      "rows": 2203
+    },
+    {
+      "actual": "Irrelevant",
+      "predicted": "Negative",
+      "rows": 2071
+    },
+    {
+      "actual": "Irrelevant",
+      "predicted": "Neutral",
+      "rows": 1832
+    }
+  ],
+  "high_confidence_errors": [
+    {
+      "tweet_id": "1074",
+      "entity": "AssassinsCreed",
+      "text": "Excellent! I'm looking forward to Vinland Saga the Game! Lol. Looks great! Can't wait!",
+      "sentiment": "Irrelevant",
+      "predicted": "Positive",
+      "confidence": 0.9978863872887908,
+      "fold": 2
+    },
+    {
+      "tweet_id": "2036",
+      "entity": "CallOfDuty",
+      "text": "How is it that you guys @CallofDuty Makes millions and still dont fix our dog shit servers wtf",
+      "sentiment": "Neutral",
+      "predicted": "Negative",
+      "confidence": 0.995682605535517,
+      "fold": 3
+    },
+    {
+      "tweet_id": "757",
+      "entity": "ApexLegends",
+      "text": "More exciting Apex Legends gameplay in The Ranked Leader mode. youtu. uk be / e Bhkry _ a azX50",
+      "sentiment": "Positive",
+      "predicted": "Neutral",
+      "confidence": 0.9883480600290977,
+      "fold": 3
+    },
+    {
+      "tweet_id": "360",
+      "entity": "Amazon",
+      "text": "Amazon Prime Day is on there, but delayed at.com/article/news/h...",
+      "sentiment": "Negative",
+      "predicted": "Neutral",
+      "confidence": 0.9851175838237614,
+      "fold": 4
+    },
+    {
+      "tweet_id": "585",
+      "entity": "ApexLegends",
+      "text": "I Love",
+      "sentiment": "Negative",
+      "predicted": "Positive",
+      "confidence": 0.9848003342666398,
+      "fold": 4
+    },
+    {
+      "tweet_id": "845",
+      "entity": "AssassinsCreed",
+      "text": "Been playing through season 2 and obviously've been loving the soundtrack. Looked it up cause in course it's great... Love his taking on the new Assassin's Creed games. Holy stuff!",
+      "sentiment": "Irrelevant",
+      "predicted": "Positive",
+      "confidence": 0.9819016778278129,
+      "fold": 4
+    },
+    {
+      "tweet_id": "7192",
+      "entity": "johnson&johnson",
+      "text": "Love the",
+      "sentiment": "Neutral",
+      "predicted": "Positive",
+      "confidence": 0.9782138893746415,
+      "fold": 5
+    },
+    {
+      "tweet_id": "9822",
+      "entity": "PlayStation5(PS5)",
+      "text": "aie good play",
+      "sentiment": "Irrelevant",
+      "predicted": "Positive",
+      "confidence": 0.9762704548427794,
+      "fold": 3
+    },
+    {
+      "tweet_id": "8679",
+      "entity": "NBA2K",
+      "text": "@Beluba @NBA2K @Ronnie2K @2Kstauff @NBA2K_2KTV @NBA2KLab youtu.be/MR1nti_OddA I\u2019d say this is an easy commitment and fix",
+      "sentiment": "Neutral",
+      "predicted": "Negative",
+      "confidence": 0.9761009573396457,
+      "fold": 1
+    },
+    {
+      "tweet_id": "5899",
+      "entity": "HomeDepot",
+      "text": "Very Love",
+      "sentiment": "Irrelevant",
+      "predicted": "Positive",
+      "confidence": 0.9760297491821647,
+      "fold": 5
+    },
+    {
+      "tweet_id": "118",
+      "entity": "Amazon",
+      "text": "Great story from @ D _ Towski. riverfronttimes.com / newsblog / 2020 /...",
+      "sentiment": "Negative",
+      "predicted": "Neutral",
+      "confidence": 0.9736005918946697,
+      "fold": 4
+    },
+    {
+      "tweet_id": "879",
+      "entity": "AssassinsCreed",
+      "text": "Found this perfect setting for Zeus",
+      "sentiment": "Irrelevant",
+      "predicted": "Positive",
+      "confidence": 0.9733849712864605,
+      "fold": 4
+    },
+    {
+      "tweet_id": "4900",
+      "entity": "GrandTheftAuto(GTA)",
+      "text": "Me and skxve were in the party bus on GTA and he was on the roof. A song with police sirens sounded, and he pulled out his minigun and said, \"Where are those clops that I fuck again.\" or something like that.",
+      "sentiment": "Neutral",
+      "predicted": "Irrelevant",
+      "confidence": 0.9731610798305745,
+      "fold": 1
+    },
+    {
+      "tweet_id": "8465",
+      "entity": "NBA2K",
+      "text": "Jimmy Butler makin this shit look like NBA2K",
+      "sentiment": "Neutral",
+      "predicted": "Negative",
+      "confidence": 0.9724567215385781,
+      "fold": 2
+    },
+    {
+      "tweet_id": "6689",
+      "entity": "Fortnite",
+      "text": "I just ran over three people in a truck in Fornite and they were on top of the coupling with the sniper shooting at this guy, accidentally slipped on a hill right in front of him and took second place.",
+      "sentiment": "Neutral",
+      "predicted": "Irrelevant",
+      "confidence": 0.9718805900889796,
+      "fold": 1
+    },
+    {
+      "tweet_id": "8760",
+      "entity": "NBA2K",
+      "text": "@NBA2K what wrong with us?",
+      "sentiment": "Irrelevant",
+      "predicted": "Negative",
+      "confidence": 0.9705149878501782,
+      "fold": 2
+    },
+    {
+      "tweet_id": "6213",
+      "entity": "FIFA",
+      "text": "Now that FIFA is not my game until the next game.",
+      "sentiment": "Positive",
+      "predicted": "Negative",
+      "confidence": 0.9701557989378778,
+      "fold": 4
+    },
+    {
+      "tweet_id": "887",
+      "entity": "AssassinsCreed",
+      "text": "Good to have played all that Assasin's Creed!",
+      "sentiment": "Negative",
+      "predicted": "Positive",
+      "confidence": 0.9682694956188675,
+      "fold": 3
+    },
+    {
+      "tweet_id": "2318",
+      "entity": "CallOfDuty",
+      "text": "Best laugh ever.",
+      "sentiment": "Negative",
+      "predicted": "Irrelevant",
+      "confidence": 0.9679370853965413,
+      "fold": 3
+    },
+    {
+      "tweet_id": "18",
+      "entity": "Amazon",
+      "text": "Amazon Best Sellers: Best Sports Collectibles ift.tt/32vpc7x .             100 Vintage Football Cards in Old Sealed Wax Packs - Perfect for New Collectors.          ift.tt/2Re9Pfb ift.tt/2Q5Pvfw April 05, 2020 at 11:31AM",
+      "sentiment": "Positive",
+      "predicted": "Neutral",
+      "confidence": 0.9675220433812475,
+      "fold": 3
+    },
+    {
+      "tweet_id": "9724",
+      "entity": "PlayStation5(PS5)",
+      "text": "xbox down votes. i getting my ps5 fuck xbox if u microsoft fix ur shit console servers. im paying $20 a month to be able to play for maybe 2 weeks max. shit fucking console. subscription should be $1 a month for how many fucking problems there are.",
+      "sentiment": "Positive",
+      "predicted": "Negative",
+      "confidence": 0.9663007542536007,
+      "fold": 5
+    },
+    {
+      "tweet_id": "12984",
+      "entity": "Xbox(Xseries)",
+      "text": "His spokesman.",
+      "sentiment": "Neutral",
+      "predicted": "Irrelevant",
+      "confidence": 0.9640761342564347,
+      "fold": 4
+    },
+    {
+      "tweet_id": "7355",
+      "entity": "LeagueOfLegends",
+      "text": "5... \u201c.. on.com/2020/07/23/lea...",
+      "sentiment": "Negative",
+      "predicted": "Neutral",
+      "confidence": 0.9640621881517231,
+      "fold": 1
+    },
+    {
+      "tweet_id": "11196",
+      "entity": "TomClancysGhostRecon",
+      "text": "Going live on  . . .  twitch.tv/OrbitalShark .  https://t.co/1U7spSxtiK",
+      "sentiment": "Positive",
+      "predicted": "Neutral",
+      "confidence": 0.9635531865746255,
+      "fold": 5
+    },
+    {
+      "tweet_id": "1902",
+      "entity": "CallOfDutyBlackopsColdWar",
+      "text": "Finally!!!! Another Death time awaits Modern Warfare!! Oh happy days love happy days.",
+      "sentiment": "Irrelevant",
+      "predicted": "Positive",
+      "confidence": 0.9633913736810795,
+      "fold": 2
+    }
+  ],
+  "label_order": [
+    "Negative",
+    "Neutral",
+    "Positive",
+    "Irrelevant"
+  ],
+  "created_at_utc": "2026-10-21T12:55:20.829774+00:00",
+  "dataset": {
+    "rows": 71117,
+    "unique_tweet_ids": 12447,
+    "entities": 32,
+    "class_counts": {
+      "Irrelevant": 12448,
+      "Negative": 21571,
+      "Neutral": 17541,
+      "Positive": 19557
+    },
+    "removed_missing_text": 858,
+    "removed_duplicate_rows": 2707,
+    "sha256": "68ebaee4f44bda5de49b96b5e5630184f1af894970b994aa6bb0aa5e1dbfe9a0"
+  },
+  "normalized_duplicate_audit": {
+    "normalized_variant_groups": 1540,
+    "affected_rows": 3410,
+    "largest_group_rows": 25
+  },
+  "protocol": {
+    "folds": 5,
+    "random_seed": 42,
+    "regularization": 0.5,
+    "architecture": "entity_word_char"
+  }
+}
