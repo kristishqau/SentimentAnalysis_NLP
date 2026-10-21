@@ -8,22 +8,22 @@ A production-minded, classical NLP baseline for four-class, entity-focused tweet
 
 The central result is not an inflated notebook score: it is a defensible evaluation protocol. Augmented variants in this dataset share tweet IDs, and some exact texts occur under different IDs. This implementation keeps every connected duplicate family inside one fold during holdout creation and model selection.
 
-## Verified result
+## Verified v2 result
 
 The checked-in experiment evidence records:
 
-- **55.59% holdout accuracy** and **53.96% macro-F1** on 14,210 untouched rows.
-- **53.13% grouped-CV macro-F1** for the selected `C=0.5` model.
-- **0 shared tweet IDs** and **0 exact shared texts** across train and holdout.
-- A deterministic seed, input SHA-256, cleaning counts, split facts, package versions, per-class metrics, and confusion matrix.
+- **58.34% ± 0.88% accuracy** and **57.13% ± 0.84% macro-F1** across five outer grouped folds.
+- **2.55 macro-F1 points gained** by entity context over the word+character candidate.
+- **0 shared tweet IDs** and **0 shared exact texts** in every outer fold.
+- Four comparable baselines, nested hyperparameter selection, fold-level metrics, runtime, artifact size, deterministic seed, input SHA-256, and package versions.
 
-This score is intentionally lower than the original notebook's 84.9% random-split result. That older approach allowed related augmented samples to cross the boundary and selected models against its test set. See the [model card](reports/MODEL_CARD.md) and [machine-readable experiment](reports/experiment.json) for the full evidence.
+This score is intentionally lower than the original notebook's 84.9% random-split result. That older approach allowed related augmented samples to cross the boundary and selected models against its test set. See the [benchmark narrative](reports/BENCHMARK.md), [model card](reports/MODEL_CARD.md), and [machine-readable fold evidence](reports/benchmark_v2.json).
 
 ## Engineering highlights
 
-- End-to-end scikit-learn pipeline: word `(1, 2)` and character `(3, 5)` TF-IDF features plus balanced logistic regression.
+- End-to-end scikit-learn pipeline: word `(1, 2)` and character `(3, 5)` TF-IDF, one-hot entity context, and balanced logistic regression.
 - Leakage-safe connected grouping over both tweet ID and exact-text hash.
-- Grouped, stratified cross-validation for hyperparameter selection; holdout used once.
+- Nested grouped, stratified evaluation: five outer folds and three inner selection folds.
 - Versioned model artifact containing preprocessing, classifier, and experiment metadata together.
 - Installable `src/` package with train and predict CLIs.
 - 95% branch coverage, Ruff quality gates, Python 3.10–3.13 CI, dependency auditing, and Dependabot.
@@ -35,13 +35,13 @@ headerless CSV
     │
     └── connected duplicate groups (tweet ID ∪ exact text)
             │
-            ├── untouched 20% holdout ───────────────┐
-            │                                         │ evaluate once
-            └── 80% development set                  ▼
-                    └── grouped CV → TF-IDF → logistic regression
-                                              │
-                                              ├── versioned model artifact
-                                              └── reproducible metrics JSON
+            └── five outer grouped folds
+                    ├── outer test fold → unbiased candidate score
+                    └── outer training folds
+                            └── inner grouped CV → model selection
+                                    └── TF-IDF + entity → logistic regression
+                                            ├── versioned model artifact
+                                            └── reproducible metrics JSON
 ```
 
 ## Quick start
@@ -74,8 +74,16 @@ The command writes a trusted local pipeline to `artifacts/sentiment_model.joblib
 Predict one or more texts:
 
 ```bash
-uv run sentiment-predict --model artifacts/sentiment_model.joblib "The update is excellent" "The service is frustrating and broken"
+uv run sentiment-predict --model artifacts/sentiment_model.joblib --entity Microsoft "The update is excellent" "The service is frustrating and broken"
 ```
+
+Reproduce the full published comparison and refit its winner:
+
+```bash
+uv run sentiment-benchmark --jobs 2
+```
+
+This audit path performs 150 nested fits and took about one hour of active wall time on the reference Windows laptop. Runtime is hardware-dependent; see the benchmark report's system-sleep timing caveat. Normal inference does not repeat the benchmark.
 
 `joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
 
@@ -84,6 +92,7 @@ uv run sentiment-predict --model artifacts/sentiment_model.joblib "The update is
 - [Exploration notebook](notebooks/sentiment_analysis.ipynb) — compact EDA, leakage demonstration, split audit, and result visualization. It calls package code instead of duplicating training logic.
 - [Data card](reports/DATA_CARD.md) — provenance, schema, quality findings, responsible-use notes, and licensing boundary.
 - [Model card](reports/MODEL_CARD.md) — intended use, methodology, metrics, limitations, and ethical considerations.
+- [V2 benchmark](reports/BENCHMARK.md) — candidate comparison, protocol, decision, and timing caveat.
 
 Run the same local gates as CI:
 

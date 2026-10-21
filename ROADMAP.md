@@ -15,11 +15,11 @@ Exit criterion: clean local quality suite, green Python 3.10–3.13 CI, reproduc
 
 ## Milestone 2 — Defensible model comparison
 
-- [ ] Add majority, word-only, word+character, and entity-aware baselines.
-- [ ] Evaluate candidates with the same connected duplicate groups.
-- [ ] Replace iterative use of the v1 holdout with outer grouped evaluation for v2.
-- [ ] Report mean, standard deviation, fold results, runtime, and model size.
-- [ ] Fit the selected model on all usable training records for inference.
+- [x] Add majority, word-only, word+character, and entity-aware baselines.
+- [x] Evaluate candidates with the same connected duplicate groups.
+- [x] Replace iterative use of the v1 holdout with outer grouped evaluation for v2.
+- [x] Report mean, standard deviation, fold results, runtime, and model size.
+- [x] Fit the selected model on all usable training records for inference.
 
 Exit criterion: checked-in benchmark evidence showing why the selected architecture wins.
 
