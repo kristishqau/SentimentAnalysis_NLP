@@ -10,6 +10,7 @@ import pytest
 from sentiment_analysis.data import normalized_group_text
 from sentiment_analysis.transformer import (
     _reference_test_rows,
+    balanced_label_weights,
     grouped_validation_split,
     run_transformer_benchmark,
     transformer_folds,
@@ -57,6 +58,17 @@ def test_grouped_validation_split_stays_inside_outer_training_data(
         set(fit["text"].map(normalized_group_text))
         & set(validation["text"].map(normalized_group_text))
     )
+
+
+def test_balanced_label_weights_emphasize_the_rarest_class() -> None:
+    weights = balanced_label_weights(
+        ["Negative"] * 4 + ["Neutral"] * 3 + ["Positive"] * 2 + ["Irrelevant"]
+    )
+
+    assert list(weights) == ["Negative", "Neutral", "Positive", "Irrelevant"]
+    assert weights["Irrelevant"] > weights["Positive"] > weights["Neutral"]
+    with pytest.raises(ValueError, match="missing from training data"):
+        balanced_label_weights(["Negative", "Neutral"])
 
 
 def test_transformer_benchmark_rejects_different_reference_folds(

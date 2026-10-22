@@ -70,6 +70,16 @@ def grouped_validation_split(
     return outer_train_indices[fit_local], outer_train_indices[validation_local]
 
 
+def balanced_label_weights(sentiments: Sequence[str]) -> dict[str, float]:
+    """Return inverse-frequency weights in the project's canonical label order."""
+
+    counts = pd.Series(sentiments).value_counts()
+    if missing := set(LABELS) - set(counts.index):
+        raise ValueError(f"Cannot balance labels missing from training data: {sorted(missing)}")
+    total = len(sentiments)
+    return {label: total / (len(LABELS) * int(counts[label])) for label in LABELS}
+
+
 def _artifact_size(path: Path) -> int:
     return sum(item.stat().st_size for item in path.rglob("*") if item.is_file())
 
@@ -95,10 +105,15 @@ def run_transformer_benchmark(
     random_state: int = 42,
     validation_splits: int = 5,
     early_stopping_patience: int = 1,
+    class_weighting: str = "balanced",
     expected_test_rows: Sequence[int] | None = None,
 ) -> dict[str, Any]:
     """Fine-tune and evaluate a compact transformer on grouped outer folds."""
 
+    if early_stopping_patience < 1:
+        raise ValueError("early_stopping_patience must be at least 1")
+    if class_weighting not in {"balanced", "none"}:
+        raise ValueError("class_weighting must be 'balanced' or 'none'")
     outer_folds = transformer_folds(frame, n_splits=n_splits, random_state=random_state)
     actual_test_rows = [len(test_indices) for _, test_indices in outer_folds]
     if expected_test_rows is not None and actual_test_rows != list(expected_test_rows):
@@ -127,6 +142,35 @@ def run_transformer_benchmark(
         ) from error
 
     set_seed(random_state)
+
+    class BalancedTrainer(Trainer):
+        """Trainer that can optimize macro-oriented inverse-frequency loss."""
+
+        def __init__(self, *args: Any, label_weights: Any = None, **kwargs: Any) -> None:
+            super().__init__(*args, **kwargs)
+            self.label_weights = label_weights
+
+        def compute_loss(
+            self,
+            model: Any,
+            inputs: dict[str, Any],
+            return_outputs: bool = False,
+            num_items_in_batch: Any = None,
+        ) -> Any:
+            del num_items_in_batch
+            labels = inputs.pop("labels")
+            outputs = model(**inputs)
+            loss = torch.nn.functional.cross_entropy(
+                outputs.logits,
+                labels,
+                weight=(
+                    self.label_weights.to(outputs.logits.device)
+                    if self.label_weights is not None
+                    else None
+                ),
+            )
+            return (loss, outputs) if return_outputs else loss
+
     texts = transformer_inputs(frame)
     labels = frame["sentiment"].map(LABEL_TO_ID).tolist()
     folds: list[dict[str, Any]] = []
@@ -140,6 +184,15 @@ def run_transformer_benchmark(
             train_indices,
             n_splits=validation_splits,
             random_state=random_state,
+        )
+        label_weight_map = (
+            balanced_label_weights([ID_TO_LABEL[labels[index]] for index in fit_indices])
+            if class_weighting == "balanced"
+            else {label: 1.0 for label in LABELS}
+        )
+        label_weights = torch.tensor(
+            [label_weight_map[label] for label in LABELS],
+            dtype=torch.float32,
         )
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForSequenceClassification.from_pretrained(
@@ -205,7 +258,7 @@ def run_transformer_benchmark(
                 data_seed=random_state,
                 fp16=torch.cuda.is_available(),
             )
-            trainer = Trainer(
+            trainer = BalancedTrainer(
                 model=model,
                 args=arguments,
                 train_dataset=train_dataset,
@@ -218,6 +271,7 @@ def run_transformer_benchmark(
                         early_stopping_patience=early_stopping_patience,
                     )
                 ],
+                label_weights=label_weights if class_weighting == "balanced" else None,
             )
             fit_started = perf_counter()
             trainer.train()
@@ -244,6 +298,7 @@ def run_transformer_benchmark(
                     "validation_rows": len(validation_indices),
                     "best_validation_macro_f1": trainer.state.best_metric,
                     "epochs_trained": trainer.state.epoch,
+                    "label_weights": label_weight_map,
                     "fit_seconds": fit_seconds,
                     "predict_seconds": predict_seconds,
                     "artifact_bytes": _artifact_size(artifact_path),
@@ -274,6 +329,7 @@ def run_transformer_benchmark(
             "validation_splits": validation_splits,
             "early_stopping_patience": early_stopping_patience,
             "selection_metric": "inner_validation_macro_f1",
+            "class_weighting": class_weighting,
         },
         "folds": folds,
         "summary": summary,
@@ -330,6 +386,11 @@ def transformer_command(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--validation-folds", type=int, default=5)
     parser.add_argument("--early-stopping-patience", type=int, default=1)
     parser.add_argument(
+        "--class-weighting",
+        choices=("balanced", "none"),
+        default="balanced",
+    )
+    parser.add_argument(
         "--reference",
         type=Path,
         help="Classical benchmark whose outer folds must match exactly",
@@ -356,6 +417,7 @@ def transformer_command(argv: Sequence[str] | None = None) -> None:
         random_state=args.seed,
         validation_splits=args.validation_folds,
         early_stopping_patience=args.early_stopping_patience,
+        class_weighting=args.class_weighting,
         expected_test_rows=expected_test_rows,
     )
     report.update(
