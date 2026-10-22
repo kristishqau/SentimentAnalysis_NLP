@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 from collections.abc import Sequence
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from sentiment_analysis.analysis import (
@@ -54,7 +54,7 @@ def analysis_command(argv: Sequence[str] | None = None) -> None:
     )
     report.update(
         {
-            "created_at_utc": datetime.now(timezone.utc).isoformat(),
+            "created_at_utc": datetime.now(UTC).isoformat(),
             "dataset": profile.to_dict(),
             "normalized_duplicate_audit": normalized_duplicate_audit(frame),
             "protocol": {

@@ -1,7 +1,7 @@
 # SentimentAnalysis_NLP
 
 [![Quality](https://github.com/kristishqau/SentimentAnalysis_NLP/actions/workflows/quality.yml/badge.svg)](https://github.com/kristishqau/SentimentAnalysis_NLP/actions/workflows/quality.yml)
-[![Python 3.10–3.13](https://img.shields.io/badge/python-3.10--3.13-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![Python 3.11–3.14](https://img.shields.io/badge/python-3.11--3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-green.svg)](LICENSE)
 
 A production-minded, classical NLP baseline for four-class, entity-focused tweet sentiment. The project classifies text as **Negative**, **Neutral**, **Positive**, or **Irrelevant** while making data leakage, reproducibility, and artifact provenance first-class concerns.
@@ -28,7 +28,7 @@ This score is intentionally lower than the original notebook's 84.9% random-spli
 - Nested grouped, stratified evaluation: five outer folds and three inner selection folds.
 - Versioned model artifact containing preprocessing, classifier, and experiment metadata together.
 - Installable `src/` package with train and predict CLIs.
-- An enforced 85% branch-coverage floor, Ruff quality gates, Python 3.10–3.13 CI, dependency auditing, and Dependabot.
+- An enforced 85% branch-coverage floor, Ruff quality gates, Python 3.11–3.14 CI, dependency auditing, and Dependabot.
 
 See the [architecture and engineering narrative](docs/ARCHITECTURE.md) for the system
 boundaries, core design decisions, evidence trail, and an interview-ready walkthrough.
@@ -51,7 +51,7 @@ headerless CSV
 
 ## Quick start
 
-Requires Python 3.10 or newer.
+Requires Python 3.11 or newer.
 
 ```bash
 git clone https://github.com/kristishqau/SentimentAnalysis_NLP.git

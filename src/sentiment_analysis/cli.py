@@ -6,7 +6,7 @@ import argparse
 import json
 import platform
 from collections.abc import Sequence
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any
@@ -82,7 +82,7 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
     holdout_metrics = evaluate(selected.model, holdout)
     evidence: dict[str, Any] = {
         "project_version": __version__,
-        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "created_at_utc": datetime.now(UTC).isoformat(),
         "protocol": {
             "random_seed": args.seed,
             "holdout_strategy": (

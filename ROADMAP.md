@@ -8,10 +8,10 @@ This roadmap tracks the remaining work required to move the project from a well-
 - [x] Prevent tweet-ID, exact-text, and normalized near-duplicate leakage across folds.
 - [x] Add CLI workflows, tests, coverage, CI, security auditing, and dependency updates.
 - [x] Publish honest v1 evidence, a data card, and a model card.
-- [x] Restore Python 3.10 compatibility.
+- [x] Support maintained Python 3.11–3.14 releases.
 - [x] Commit an exact dependency lock and verify locked installation.
 
-Exit criterion: clean local quality suite, green Python 3.10–3.13 CI, reproducible environment.
+Exit criterion: clean local quality suite, green Python 3.11–3.14 CI, reproducible environment.
 
 ## Milestone 2 — Defensible model comparison
 

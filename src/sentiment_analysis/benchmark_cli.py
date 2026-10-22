@@ -7,7 +7,7 @@ import json
 import platform
 import sys
 from collections.abc import Sequence
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any, cast
@@ -76,7 +76,7 @@ def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
     evidence.update(
         {
             "project_version": __version__,
-            "created_at_utc": datetime.now(timezone.utc).isoformat(),
+            "created_at_utc": datetime.now(UTC).isoformat(),
             "dataset": profile.to_dict(),
             "final_model": final_model,
             "environment": {
