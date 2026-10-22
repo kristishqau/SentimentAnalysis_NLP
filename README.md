@@ -98,6 +98,8 @@ uv run sentiment-analyze --output reports/error_analysis.json
 
 ## Optional GPU benchmark
 
+[![Open transformer benchmark in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kristishqau/SentimentAnalysis_NLP/blob/main/notebooks/transformer_benchmark_colab.ipynb)
+
 The compact DistilBERT benchmark uses the identical connected outer folds and records
 quality, training time, inference time, and artifact size. Its PyTorch stack is
 isolated from the normal installation:
@@ -107,11 +109,11 @@ uv sync --locked --extra transformer
 uv run sentiment-transformer-benchmark --folds 5 --epochs 1
 ```
 
-For a free GPU, use the
-[Colab-ready transformer notebook](notebooks/transformer_benchmark_colab.ipynb). It
-starts with a two-fold smoke test before the full five-fold evidence run. Transformer
-results are deliberately not claimed in this README until that GPU run completes and
-its JSON evidence is reviewed.
+For a free GPU, select the badge above, sign in to Colab, choose a GPU runtime, and run
+the notebook cells in order. It starts with a two-fold smoke test before the full
+five-fold evidence run and downloads the resulting JSON. Transformer results are
+deliberately not claimed in this README until that GPU run completes and its evidence
+is reviewed.
 
 `joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
 
