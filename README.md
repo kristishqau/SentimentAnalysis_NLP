@@ -106,7 +106,8 @@ isolated from the normal installation:
 
 ```bash
 uv sync --locked --extra transformer
-uv run sentiment-transformer-benchmark --folds 5 --epochs 1
+uv run sentiment-transformer-benchmark --folds 5 --epochs 1 \
+  --reference reports/benchmark_v2.json
 ```
 
 For a free GPU, select the badge above, sign in to Colab, choose a GPU runtime, and run

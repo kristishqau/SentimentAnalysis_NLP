@@ -18,7 +18,7 @@ from typing import Any
 import pandas as pd
 from sklearn.model_selection import StratifiedGroupKFold
 
-from sentiment_analysis.data import LABELS, leakage_groups, load_dataset
+from sentiment_analysis.data import LABELS, leakage_groups, load_dataset, split_diagnostics
 from sentiment_analysis.modeling import classification_metrics
 
 LABEL_TO_ID = {label: index for index, label in enumerate(LABELS)}
@@ -75,8 +75,18 @@ def run_transformer_benchmark(
     max_length: int = 128,
     learning_rate: float = 2e-5,
     random_state: int = 42,
+    expected_test_rows: Sequence[int] | None = None,
 ) -> dict[str, Any]:
     """Fine-tune and evaluate a compact transformer on grouped outer folds."""
+
+    outer_folds = transformer_folds(frame, n_splits=n_splits, random_state=random_state)
+    actual_test_rows = [len(test_indices) for _, test_indices in outer_folds]
+    if expected_test_rows is not None and actual_test_rows != list(expected_test_rows):
+        raise RuntimeError(
+            "Transformer folds do not match the reference benchmark: "
+            f"expected test rows {list(expected_test_rows)}, got {actual_test_rows}. "
+            "Install the reference scikit-learn version before training."
+        )
 
     try:
         import numpy as np
@@ -100,7 +110,7 @@ def run_transformer_benchmark(
     labels = frame["sentiment"].map(LABEL_TO_ID).tolist()
     folds: list[dict[str, Any]] = []
     for fold, (train_indices, test_indices) in enumerate(
-        transformer_folds(frame, n_splits=n_splits, random_state=random_state),
+        outer_folds,
         start=1,
     ):
         print(f"Starting transformer fold {fold}/{n_splits}", flush=True)
@@ -159,14 +169,17 @@ def run_transformer_benchmark(
             actual_labels = [ID_TO_LABEL[index] for index in output.label_ids]
             predicted_labels = [ID_TO_LABEL[index] for index in predicted]
             metrics = classification_metrics(actual_labels, predicted_labels)
+            diagnostics = split_diagnostics(
+                frame.iloc[train_indices],
+                frame.iloc[test_indices],
+            )
             artifact_path = Path(temp_dir) / "artifact"
             trainer.save_model(artifact_path)
             tokenizer.save_pretrained(artifact_path)
             folds.append(
                 {
                     "fold": fold,
-                    "train_rows": len(train_indices),
-                    "test_rows": len(test_indices),
+                    **diagnostics,
                     "fit_seconds": fit_seconds,
                     "predict_seconds": predict_seconds,
                     "artifact_bytes": _artifact_size(artifact_path),
@@ -202,9 +215,36 @@ def run_transformer_benchmark(
             "torch": version("torch"),
             "transformers": version("transformers"),
             "accelerate": version("accelerate"),
+            "scikit_learn": version("scikit-learn"),
             "device": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU",
         },
     }
+
+
+def _reference_test_rows(
+    path: Path,
+    *,
+    dataset_sha256: str,
+    n_splits: int,
+) -> list[int]:
+    """Validate a classical report and return its canonical outer-fold sizes."""
+
+    reference = json.loads(path.read_text(encoding="utf-8"))
+    if reference["dataset"]["sha256"] != dataset_sha256:
+        raise ValueError("Reference benchmark uses a different dataset file")
+    if reference["protocol"]["outer_splits"] != n_splits:
+        raise ValueError(
+            f"Reference benchmark has {reference['protocol']['outer_splits']} folds, not {n_splits}"
+        )
+    installed_version = version("scikit-learn")
+    reference_version = reference["environment"]["scikit_learn"]
+    if installed_version != reference_version:
+        raise RuntimeError(
+            "scikit-learn version does not match the reference benchmark: "
+            f"expected {reference_version}, got {installed_version}"
+        )
+    selected = reference["selection"]["model_kind"]
+    return [fold["test_rows"] for fold in reference["candidates"][selected]["folds"]]
 
 
 def transformer_command(argv: Sequence[str] | None = None) -> None:
@@ -220,8 +260,22 @@ def transformer_command(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--max-length", type=int, default=128)
     parser.add_argument("--learning-rate", type=float, default=2e-5)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--reference",
+        type=Path,
+        help="Classical benchmark whose outer folds must match exactly",
+    )
     args = parser.parse_args(argv)
     frame, profile = load_dataset(args.data)
+    expected_test_rows = (
+        _reference_test_rows(
+            args.reference,
+            dataset_sha256=profile.sha256,
+            n_splits=args.folds,
+        )
+        if args.reference is not None
+        else None
+    )
     report = run_transformer_benchmark(
         frame,
         model_name=args.model,
@@ -231,6 +285,7 @@ def transformer_command(argv: Sequence[str] | None = None) -> None:
         max_length=args.max_length,
         learning_rate=args.learning_rate,
         random_state=args.seed,
+        expected_test_rows=expected_test_rows,
     )
     report.update(
         {
