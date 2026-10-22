@@ -52,6 +52,24 @@ def transformer_folds(
     return list(splitter.split(frame["text"], frame["sentiment"], leakage_groups(frame)))
 
 
+def grouped_validation_split(
+    frame: pd.DataFrame,
+    outer_train_indices: Any,
+    *,
+    n_splits: int = 5,
+    random_state: int = 42,
+) -> tuple[Any, Any]:
+    """Split one outer training partition without exposing its test partition."""
+
+    outer_train = frame.iloc[outer_train_indices]
+    fit_local, validation_local = transformer_folds(
+        outer_train,
+        n_splits=n_splits,
+        random_state=random_state,
+    )[0]
+    return outer_train_indices[fit_local], outer_train_indices[validation_local]
+
+
 def _artifact_size(path: Path) -> int:
     return sum(item.stat().st_size for item in path.rglob("*") if item.is_file())
 
@@ -70,11 +88,13 @@ def run_transformer_benchmark(
     *,
     model_name: str = "distilbert/distilbert-base-uncased",
     n_splits: int = 5,
-    epochs: float = 1.0,
+    epochs: float = 3.0,
     batch_size: int = 32,
     max_length: int = 128,
     learning_rate: float = 2e-5,
     random_state: int = 42,
+    validation_splits: int = 5,
+    early_stopping_patience: int = 1,
     expected_test_rows: Sequence[int] | None = None,
 ) -> dict[str, Any]:
     """Fine-tune and evaluate a compact transformer on grouped outer folds."""
@@ -96,6 +116,7 @@ def run_transformer_benchmark(
             AutoModelForSequenceClassification,
             AutoTokenizer,
             DataCollatorWithPadding,
+            EarlyStoppingCallback,
             Trainer,
             TrainingArguments,
             set_seed,
@@ -114,6 +135,12 @@ def run_transformer_benchmark(
         start=1,
     ):
         print(f"Starting transformer fold {fold}/{n_splits}", flush=True)
+        fit_indices, validation_indices = grouped_validation_split(
+            frame,
+            train_indices,
+            n_splits=validation_splits,
+            random_state=random_state,
+        )
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForSequenceClassification.from_pretrained(
             model_name,
@@ -123,8 +150,14 @@ def run_transformer_benchmark(
         )
         train_dataset = Dataset.from_dict(
             {
-                "input_text": [texts[index] for index in train_indices],
-                "label": [labels[index] for index in train_indices],
+                "input_text": [texts[index] for index in fit_indices],
+                "label": [labels[index] for index in fit_indices],
+            }
+        )
+        validation_dataset = Dataset.from_dict(
+            {
+                "input_text": [texts[index] for index in validation_indices],
+                "label": [labels[index] for index in validation_indices],
             }
         )
         test_dataset = Dataset.from_dict(
@@ -136,7 +169,23 @@ def run_transformer_benchmark(
 
         tokenize = partial(_tokenize_batch, tokenizer=tokenizer, max_length=max_length)
         train_dataset = train_dataset.map(tokenize, batched=True, remove_columns=["input_text"])
+        validation_dataset = validation_dataset.map(
+            tokenize,
+            batched=True,
+            remove_columns=["input_text"],
+        )
         test_dataset = test_dataset.map(tokenize, batched=True, remove_columns=["input_text"])
+
+        def validation_metrics(output: Any) -> dict[str, float]:
+            predicted = np.asarray(output.predictions).argmax(axis=1)
+            actual = [ID_TO_LABEL[index] for index in output.label_ids]
+            inferred = [ID_TO_LABEL[index] for index in predicted]
+            metrics = classification_metrics(actual, inferred)
+            return {
+                "accuracy": metrics["accuracy"],
+                "macro_f1": metrics["macro_f1"],
+            }
+
         with tempfile.TemporaryDirectory(prefix=f"sentiment-transformer-{fold}-") as temp_dir:
             arguments = TrainingArguments(
                 output_dir=temp_dir,
@@ -144,8 +193,12 @@ def run_transformer_benchmark(
                 learning_rate=learning_rate,
                 per_device_train_batch_size=batch_size,
                 per_device_eval_batch_size=batch_size * 2,
-                eval_strategy="no",
-                save_strategy="no",
+                eval_strategy="epoch",
+                save_strategy="epoch",
+                load_best_model_at_end=True,
+                metric_for_best_model="macro_f1",
+                greater_is_better=True,
+                save_total_limit=1,
                 logging_steps=100,
                 report_to="none",
                 seed=random_state,
@@ -156,8 +209,15 @@ def run_transformer_benchmark(
                 model=model,
                 args=arguments,
                 train_dataset=train_dataset,
+                eval_dataset=validation_dataset,
                 data_collator=DataCollatorWithPadding(tokenizer=tokenizer),
                 processing_class=tokenizer,
+                compute_metrics=validation_metrics,
+                callbacks=[
+                    EarlyStoppingCallback(
+                        early_stopping_patience=early_stopping_patience,
+                    )
+                ],
             )
             fit_started = perf_counter()
             trainer.train()
@@ -180,6 +240,10 @@ def run_transformer_benchmark(
                 {
                     "fold": fold,
                     **diagnostics,
+                    "fit_rows": len(fit_indices),
+                    "validation_rows": len(validation_indices),
+                    "best_validation_macro_f1": trainer.state.best_metric,
+                    "epochs_trained": trainer.state.epoch,
                     "fit_seconds": fit_seconds,
                     "predict_seconds": predict_seconds,
                     "artifact_bytes": _artifact_size(artifact_path),
@@ -207,6 +271,9 @@ def run_transformer_benchmark(
             "max_length": max_length,
             "learning_rate": learning_rate,
             "random_seed": random_state,
+            "validation_splits": validation_splits,
+            "early_stopping_patience": early_stopping_patience,
+            "selection_metric": "inner_validation_macro_f1",
         },
         "folds": folds,
         "summary": summary,
@@ -255,11 +322,13 @@ def transformer_command(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--output", type=Path, default=Path("reports/transformer_benchmark.json"))
     parser.add_argument("--model", default="distilbert/distilbert-base-uncased")
     parser.add_argument("--folds", type=int, default=5)
-    parser.add_argument("--epochs", type=float, default=1.0)
+    parser.add_argument("--epochs", type=float, default=3.0)
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--max-length", type=int, default=128)
     parser.add_argument("--learning-rate", type=float, default=2e-5)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--validation-folds", type=int, default=5)
+    parser.add_argument("--early-stopping-patience", type=int, default=1)
     parser.add_argument(
         "--reference",
         type=Path,
@@ -285,6 +354,8 @@ def transformer_command(argv: Sequence[str] | None = None) -> None:
         max_length=args.max_length,
         learning_rate=args.learning_rate,
         random_state=args.seed,
+        validation_splits=args.validation_folds,
+        early_stopping_patience=args.early_stopping_patience,
         expected_test_rows=expected_test_rows,
     )
     report.update(

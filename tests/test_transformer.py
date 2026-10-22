@@ -10,6 +10,7 @@ import pytest
 from sentiment_analysis.data import normalized_group_text
 from sentiment_analysis.transformer import (
     _reference_test_rows,
+    grouped_validation_split,
     run_transformer_benchmark,
     transformer_folds,
     transformer_inputs,
@@ -35,6 +36,27 @@ def test_transformer_folds_preserve_all_leakage_groups(sample_frame: pd.DataFram
 
     with pytest.raises(ValueError, match="at least 2"):
         transformer_folds(sample_frame, n_splits=1)
+
+
+def test_grouped_validation_split_stays_inside_outer_training_data(
+    sample_frame: pd.DataFrame,
+) -> None:
+    outer_train, _ = transformer_folds(sample_frame, n_splits=2)[0]
+    fit_indices, validation_indices = grouped_validation_split(
+        sample_frame,
+        outer_train,
+        n_splits=2,
+    )
+    fit = sample_frame.iloc[fit_indices]
+    validation = sample_frame.iloc[validation_indices]
+
+    assert set(fit_indices) | set(validation_indices) == set(outer_train)
+    assert not (set(fit_indices) & set(validation_indices))
+    assert not (set(fit["tweet_id"]) & set(validation["tweet_id"]))
+    assert not (
+        set(fit["text"].map(normalized_group_text))
+        & set(validation["text"].map(normalized_group_text))
+    )
 
 
 def test_transformer_benchmark_rejects_different_reference_folds(
