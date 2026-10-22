@@ -52,6 +52,12 @@ jobs:
         run: python -m pip install --upgrade pip && python -m pip install -e ".[dev]"
       - name: Audit dependencies
         run: pip-audit
+      - name: Audit locked optional dependencies
+        run: |
+          python -m pip install uv==0.11.2
+          uv export --quiet --locked --all-extras --no-emit-project \
+            --format requirements-txt --output-file all-extras-requirements.txt
+          pip-audit --requirement all-extras-requirements.txt --disable-pip
       - name: Build distributions
         run: python -m build
 

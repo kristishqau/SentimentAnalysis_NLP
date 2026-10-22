@@ -43,7 +43,7 @@ dev = [
 ]
 transformer = [
   "accelerate>=1,<2",
-  "datasets>=4,<5",
+  "datasets>=5.0.1,<6",
   "torch>=2.2,<3",
   "transformers>=5,<6",
 ]
