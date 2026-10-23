@@ -115,6 +115,8 @@ uv run sentiment-analyze --output reports/error_analysis.json
 
 [![Open transformer benchmark in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kristishqau/SentimentAnalysis_NLP/blob/main/notebooks/transformer_benchmark_colab.ipynb)
 
+[![Open optimization study in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kristishqau/SentimentAnalysis_NLP/blob/main/notebooks/transformer_optimization_colab.ipynb)
+
 The GPU benchmark compares compact DistilBERT with a Twitter-pretrained RoBERTa encoder
 on identical connected outer folds and records quality, training time, inference time,
 and artifact size. Its PyTorch stack is isolated from the normal installation:

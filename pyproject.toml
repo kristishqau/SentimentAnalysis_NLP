@@ -44,6 +44,7 @@ dev = [
 transformer = [
   "accelerate>=1,<2",
   "datasets>=5.0.1,<6",
+  "protobuf>=5,<7",
   "sentencepiece>=0.2,<1",
   "torch>=2.2,<3",
   "transformers>=5,<6",

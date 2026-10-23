@@ -21,6 +21,8 @@ Every canonical outer fold is processed independently:
 All candidates use balanced cross-entropy, a four-epoch ceiling, macro-F1 checkpoint
 selection, and early stopping. The search is deliberately bounded: it covers the
 high-impact choices without presenting a costly Cartesian sweep as scientific rigor.
+The optional dependency set includes both SentencePiece and protobuf because the
+DeBERTa-v3 tokenizer requires them during vocabulary conversion.
 
 ## Seed policy
 

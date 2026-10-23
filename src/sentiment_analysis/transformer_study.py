@@ -100,6 +100,8 @@ def merge_study_reports(reports: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "outer_folds",
         "validation_splits",
         "epochs_ceiling",
+        "batch_size",
+        "early_stopping_patience",
         "selection_metric",
         "selection_seed",
         "stability_seeds",
@@ -107,6 +109,8 @@ def merge_study_reports(reports: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "learning_rates",
         "max_lengths",
         "weight_decays",
+        "class_weighting",
+        "seed_policy",
     )
     for report in reports[1:]:
         if report.get("dataset") != reference.get("dataset"):
@@ -130,6 +134,9 @@ def merge_study_reports(reports: Sequence[dict[str, Any]]) -> dict[str, Any]:
     merged = {key: value for key, value in reference.items() if key not in {"folds", "summary"}}
     merged["protocol"] = {**reference["protocol"], "completed_outer_folds": expected}
     merged["folds"] = folds
+    merged["environments_by_fold"] = {
+        str(report["folds"][0]["fold"]): report["environment"] for report in reports
+    }
     merged["summary"] = {
         "accuracy": _summary(folds, "accuracy"),
         "macro_f1": _summary(folds, "macro_f1"),
@@ -432,6 +439,7 @@ def run_transformer_study(
             "completed_outer_folds": requested,
             "validation_splits": validation_splits,
             "epochs_ceiling": epochs,
+            "batch_size": batch_size,
             "early_stopping_patience": early_stopping_patience,
             "selection_metric": "inner_validation_macro_f1",
             "selection_seed": random_state,
