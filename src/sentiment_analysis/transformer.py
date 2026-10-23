@@ -200,6 +200,7 @@ def run_transformer_benchmark(
             num_labels=len(LABELS),
             id2label=ID_TO_LABEL,
             label2id=LABEL_TO_ID,
+            ignore_mismatched_sizes=True,
         )
         train_dataset = Dataset.from_dict(
             {
