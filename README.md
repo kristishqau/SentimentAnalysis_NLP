@@ -175,6 +175,9 @@ resource contract expected from the hosting provider.
 
 The [transformer benchmark](reports/TRANSFORMER_BENCHMARK.md) provides the reviewed
 identical-fold quality, class-level, runtime, and artifact-size comparison.
+The dedicated [transformer error analysis](reports/TRANSFORMER_ERROR_ANALYSIS.md)
+pools all canonical outer-fold predictions to quantify class stability and dominant
+confusion directions without reusing the test folds for model selection.
 
 Run the same local gates as CI:
 

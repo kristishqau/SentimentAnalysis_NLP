@@ -42,6 +42,18 @@ Exit criterion: an automated error-analysis report connected to specific next ex
 
 Exit criterion: reproducible classical-versus-transformer evidence.
 
+## Milestone 4.1 — Transformer optimization
+
+- [x] Add grouped inner validation, macro-F1 checkpoint selection, and early stopping.
+- [x] Compare DistilBERT with a domain-pretrained Twitter-RoBERTa encoder.
+- [x] Publish pooled transformer class and confusion diagnostics.
+- [ ] Run the preregistered compact hyperparameter and encoder study.
+- [ ] Measure the selected configuration across multiple fixed random seeds.
+- [ ] Publish row-level transformer slice and confidence diagnostics.
+
+Exit criterion: the additional encoders and bounded search are evaluated without
+using outer-fold labels for selection, and their evidence passes repository checks.
+
 ## Milestone 5 — Demonstration and delivery
 
 - [x] Add a safe local interactive demo with entity input, examples, uncalibrated confidence, limitations, input validation, and a health endpoint.

@@ -1,0 +1,167 @@
+{
+  "protocol_note": "Post-selection diagnostics pooled from group-isolated outer-fold predictions; this report does not constitute an additional benchmark.",
+  "model": "cardiffnlp/twitter-roberta-base",
+  "folds": 5,
+  "rows": 71117,
+  "accuracy": 0.6484806726942925,
+  "macro_f1": 0.6358060035002413,
+  "weakest_class": "Irrelevant",
+  "per_class": [
+    {
+      "label": "Negative",
+      "precision": 0.7330586928346603,
+      "recall": 0.7341801492744889,
+      "f1": 0.7336189924724957,
+      "support": 21571,
+      "fold_f1_mean": 0.7333189195705274,
+      "fold_f1_standard_deviation": 0.013968322641436003,
+      "fold_f1_min": 0.7185365288873451,
+      "fold_f1_max": 0.7476067124676202
+    },
+    {
+      "label": "Neutral",
+      "precision": 0.6228649794289989,
+      "recall": 0.5696368508066815,
+      "f1": 0.5950629782925886,
+      "support": 17541,
+      "fold_f1_mean": 0.5947967859367245,
+      "fold_f1_standard_deviation": 0.022960024892195726,
+      "fold_f1_min": 0.5657022302591923,
+      "fold_f1_max": 0.6226249634609763
+    },
+    {
+      "label": "Positive",
+      "precision": 0.6453632260882225,
+      "recall": 0.6800122718208315,
+      "f1": 0.6622348371676128,
+      "support": 19557,
+      "fold_f1_mean": 0.6613359409395733,
+      "fold_f1_standard_deviation": 0.02273289893286206,
+      "fold_f1_min": 0.6260551491277434,
+      "fold_f1_max": 0.6799031476997579
+    },
+    {
+      "label": "Irrelevant",
+      "precision": 0.5433768656716418,
+      "recall": 0.5615359897172236,
+      "f1": 0.552307206068268,
+      "support": 12448,
+      "fold_f1_mean": 0.5524947005293073,
+      "fold_f1_standard_deviation": 0.021624276410976855,
+      "fold_f1_min": 0.5328947368421053,
+      "fold_f1_max": 0.5844636251541308
+    }
+  ],
+  "confusion_matrix": [
+    [
+      15837,
+      1960,
+      2014,
+      1760
+    ],
+    [
+      2385,
+      9992,
+      3225,
+      1939
+    ],
+    [
+      1644,
+      2439,
+      13299,
+      2175
+    ],
+    [
+      1738,
+      1651,
+      2069,
+      6990
+    ]
+  ],
+  "confusion_pairs": [
+    {
+      "actual": "Neutral",
+      "predicted": "Positive",
+      "rows": 3225
+    },
+    {
+      "actual": "Positive",
+      "predicted": "Neutral",
+      "rows": 2439
+    },
+    {
+      "actual": "Neutral",
+      "predicted": "Negative",
+      "rows": 2385
+    },
+    {
+      "actual": "Positive",
+      "predicted": "Irrelevant",
+      "rows": 2175
+    },
+    {
+      "actual": "Irrelevant",
+      "predicted": "Positive",
+      "rows": 2069
+    },
+    {
+      "actual": "Negative",
+      "predicted": "Positive",
+      "rows": 2014
+    },
+    {
+      "actual": "Negative",
+      "predicted": "Neutral",
+      "rows": 1960
+    },
+    {
+      "actual": "Neutral",
+      "predicted": "Irrelevant",
+      "rows": 1939
+    },
+    {
+      "actual": "Negative",
+      "predicted": "Irrelevant",
+      "rows": 1760
+    },
+    {
+      "actual": "Irrelevant",
+      "predicted": "Negative",
+      "rows": 1738
+    },
+    {
+      "actual": "Irrelevant",
+      "predicted": "Neutral",
+      "rows": 1651
+    },
+    {
+      "actual": "Positive",
+      "predicted": "Negative",
+      "rows": 1644
+    }
+  ],
+  "label_order": [
+    "Negative",
+    "Neutral",
+    "Positive",
+    "Irrelevant"
+  ],
+  "source": {
+    "path": "reports/transformer_benchmark.json",
+    "sha256": "c6c81fc961222d29c599b04869bb79a43c905b2a984726caf9bdb9beda0ff166"
+  },
+  "dataset": {
+    "rows": 71117,
+    "unique_tweet_ids": 12447,
+    "entities": 32,
+    "class_counts": {
+      "Irrelevant": 12448,
+      "Negative": 21571,
+      "Neutral": 17541,
+      "Positive": 19557
+    },
+    "removed_missing_text": 858,
+    "removed_duplicate_rows": 2707,
+    "sha256": "68ebaee4f44bda5de49b96b5e5630184f1af894970b994aa6bb0aa5e1dbfe9a0"
+  }
+}

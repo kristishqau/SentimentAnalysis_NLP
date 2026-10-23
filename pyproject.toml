@@ -55,6 +55,7 @@ sentiment-benchmark = "sentiment_analysis.benchmark_cli:benchmark_command"
 sentiment-analyze = "sentiment_analysis.analysis_cli:analysis_command"
 sentiment-demo = "sentiment_analysis.demo:demo_command"
 sentiment-transformer-benchmark = "sentiment_analysis.transformer:transformer_command"
+sentiment-transformer-analyze = "sentiment_analysis.transformer_analysis:transformer_analysis_command"
 
 [project.urls]
 Repository = "https://github.com/kristishqau/SentimentAnalysis_NLP"

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -84,3 +85,17 @@ def test_checked_in_transformer_evidence_is_comparable_and_leakage_free() -> Non
         twitter_roberta["summary"]["macro_f1"]["mean"]
         > classical["candidates"]["entity_word_char"]["summary"]["macro_f1"]["mean"]
     )
+
+
+def test_transformer_error_analysis_is_derived_from_winner_evidence() -> None:
+    reports = Path(__file__).parents[1] / "reports"
+    source_path = reports / "transformer_benchmark.json"
+    analysis = json.loads((reports / "transformer_error_analysis.json").read_text(encoding="utf-8"))
+
+    assert analysis["source"]["sha256"] == hashlib.sha256(source_path.read_bytes()).hexdigest()
+    assert analysis["model"] == "cardiffnlp/twitter-roberta-base"
+    assert analysis["folds"] == 5
+    assert analysis["rows"] == 71_117
+    assert analysis["weakest_class"] == "Irrelevant"
+    assert analysis["macro_f1"] == pytest.approx(0.635806004)
+    assert sum(sum(row) for row in analysis["confusion_matrix"]) == analysis["rows"]
