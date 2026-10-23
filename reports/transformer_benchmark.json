@@ -1,0 +1,613 @@
+{
+  "protocol": {
+    "strategy": "fixed transformer evaluated on connected grouped outer folds",
+    "model": "cardiffnlp/twitter-roberta-base",
+    "folds": 5,
+    "epochs": 3.0,
+    "batch_size": 32,
+    "max_length": 128,
+    "learning_rate": 2e-05,
+    "random_seed": 42,
+    "validation_splits": 5,
+    "early_stopping_patience": 1,
+    "selection_metric": "inner_validation_macro_f1",
+    "class_weighting": "balanced"
+  },
+  "folds": [
+    {
+      "fold": 1,
+      "train_rows": 56907,
+      "test_rows": 14210,
+      "train_tweet_ids": 9929,
+      "test_tweet_ids": 2518,
+      "tweet_id_overlap": 0,
+      "exact_text_overlap": 0,
+      "normalized_text_overlap": 0,
+      "train_class_counts": {
+        "Irrelevant": 9962,
+        "Negative": 17260,
+        "Neutral": 14036,
+        "Positive": 15649
+      },
+      "test_class_counts": {
+        "Irrelevant": 2486,
+        "Negative": 4311,
+        "Neutral": 3505,
+        "Positive": 3908
+      },
+      "fit_rows": 45500,
+      "validation_rows": 11407,
+      "best_validation_macro_f1": 0.6216618504951127,
+      "epochs_trained": 2.0,
+      "label_weights": {
+        "Negative": 0.8241559194319664,
+        "Neutral": 1.0136339333452147,
+        "Positive": 0.9091272378516624,
+        "Irrelevant": 1.4283023606228027
+      },
+      "fit_seconds": 505.38948187200003,
+      "predict_seconds": 18.104558033000103,
+      "artifact_bytes": 502184331,
+      "accuracy": 0.6349049964813511,
+      "macro_precision": 0.6284055314405942,
+      "macro_recall": 0.6269472949188227,
+      "macro_f1": 0.6251364487081094,
+      "classification_report": {
+        "Negative": {
+          "precision": 0.7707562136435748,
+          "recall": 0.6761772210623985,
+          "f1-score": 0.720375633263314,
+          "support": 4311.0
+        },
+        "Neutral": {
+          "precision": 0.5994889811561801,
+          "recall": 0.5355206847360913,
+          "f1-score": 0.5657022302591923,
+          "support": 3505.0
+        },
+        "Positive": {
+          "precision": 0.6024358416702914,
+          "recall": 0.7088024564994883,
+          "f1-score": 0.6513049612038561,
+          "support": 3908.0
+        },
+        "Irrelevant": {
+          "precision": 0.5409410892923305,
+          "recall": 0.587288817377313,
+          "f1-score": 0.5631629701060752,
+          "support": 2486.0
+        },
+        "accuracy": 0.6349049964813511,
+        "macro avg": {
+          "precision": 0.6284055314405942,
+          "recall": 0.6269472949188227,
+          "f1-score": 0.6251364487081094,
+          "support": 14210.0
+        },
+        "weighted avg": {
+          "precision": 0.6420153225332931,
+          "recall": 0.6349049964813511,
+          "f1-score": 0.6357247434289225,
+          "support": 14210.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          2915,
+          452,
+          559,
+          385
+        ],
+        [
+          374,
+          1877,
+          832,
+          422
+        ],
+        [
+          216,
+          490,
+          2770,
+          432
+        ],
+        [
+          277,
+          312,
+          437,
+          1460
+        ]
+      ],
+      "label_order": [
+        "Negative",
+        "Neutral",
+        "Positive",
+        "Irrelevant"
+      ]
+    },
+    {
+      "fold": 2,
+      "train_rows": 56890,
+      "test_rows": 14227,
+      "train_tweet_ids": 9998,
+      "test_tweet_ids": 2449,
+      "tweet_id_overlap": 0,
+      "exact_text_overlap": 0,
+      "normalized_text_overlap": 0,
+      "train_class_counts": {
+        "Irrelevant": 9958,
+        "Negative": 17256,
+        "Neutral": 14031,
+        "Positive": 15645
+      },
+      "test_class_counts": {
+        "Irrelevant": 2490,
+        "Negative": 4315,
+        "Neutral": 3510,
+        "Positive": 3912
+      },
+      "fit_rows": 45522,
+      "validation_rows": 11368,
+      "best_validation_macro_f1": 0.6178449586974348,
+      "epochs_trained": 3.0,
+      "label_weights": {
+        "Negative": 0.8241961181923523,
+        "Neutral": 1.0136723969003296,
+        "Positive": 0.9092034832627627,
+        "Irrelevant": 1.4279171894604767
+      },
+      "fit_seconds": 818.9340241740001,
+      "predict_seconds": 18.611030706999827,
+      "artifact_bytes": 502184331,
+      "accuracy": 0.6600126519997188,
+      "macro_precision": 0.6466995474698614,
+      "macro_recall": 0.6422945630114308,
+      "macro_f1": 0.6429249210332904,
+      "classification_report": {
+        "Negative": {
+          "precision": 0.7315123251165889,
+          "recall": 0.7633835457705678,
+          "f1-score": 0.7471081877976865,
+          "support": 4315.0
+        },
+        "Neutral": {
+          "precision": 0.6635576282478348,
+          "recall": 0.5675213675213675,
+          "f1-score": 0.6117936117936118,
+          "support": 3510.0
+        },
+        "Positive": {
+          "precision": 0.6458141674333027,
+          "recall": 0.7177914110429447,
+          "f1-score": 0.6799031476997579,
+          "support": 3912.0
+        },
+        "Irrelevant": {
+          "precision": 0.5459140690817186,
+          "recall": 0.5204819277108433,
+          "f1-score": 0.5328947368421053,
+          "support": 2490.0
+        },
+        "accuracy": 0.6600126519997188,
+        "macro avg": {
+          "precision": 0.6466995474698614,
+          "recall": 0.6422945630114308,
+          "f1-score": 0.6429249210332904,
+          "support": 14227.0
+        },
+        "weighted avg": {
+          "precision": 0.6586992347677333,
+          "recall": 0.6600126519997188,
+          "f1-score": 0.657753315265403,
+          "support": 14227.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          3294,
+          320,
+          349,
+          352
+        ],
+        [
+          517,
+          1992,
+          668,
+          333
+        ],
+        [
+          319,
+          392,
+          2808,
+          393
+        ],
+        [
+          373,
+          298,
+          523,
+          1296
+        ]
+      ],
+      "label_order": [
+        "Negative",
+        "Neutral",
+        "Positive",
+        "Irrelevant"
+      ]
+    },
+    {
+      "fold": 3,
+      "train_rows": 56897,
+      "test_rows": 14220,
+      "train_tweet_ids": 9989,
+      "test_tweet_ids": 2458,
+      "tweet_id_overlap": 0,
+      "exact_text_overlap": 0,
+      "normalized_text_overlap": 0,
+      "train_class_counts": {
+        "Irrelevant": 9959,
+        "Negative": 17258,
+        "Neutral": 14035,
+        "Positive": 15645
+      },
+      "test_class_counts": {
+        "Irrelevant": 2489,
+        "Negative": 4313,
+        "Neutral": 3506,
+        "Positive": 3912
+      },
+      "fit_rows": 45530,
+      "validation_rows": 11367,
+      "best_validation_macro_f1": 0.6146492991440323,
+      "epochs_trained": 2.0,
+      "label_weights": {
+        "Negative": 0.8242215785662563,
+        "Neutral": 1.0134894488469415,
+        "Positive": 0.9092906215050327,
+        "Irrelevant": 1.4279889599799271
+      },
+      "fit_seconds": 498.0484221480001,
+      "predict_seconds": 17.94167523299984,
+      "artifact_bytes": 502184331,
+      "accuracy": 0.6637834036568214,
+      "macro_precision": 0.6545018074437254,
+      "macro_recall": 0.6518762584622073,
+      "macro_f1": 0.6529123276061309,
+      "classification_report": {
+        "Negative": {
+          "precision": 0.7228861330326944,
+          "recall": 0.7433341061905866,
+          "f1-score": 0.7329675354366713,
+          "support": 4313.0
+        },
+        "Neutral": {
+          "precision": 0.6384892086330936,
+          "recall": 0.607529948659441,
+          "f1-score": 0.6226249634609763,
+          "support": 3506.0
+        },
+        "Positive": {
+          "precision": 0.6583988212180747,
+          "recall": 0.6853271983640081,
+          "f1-score": 0.6715931863727455,
+          "support": 3912.0
+        },
+        "Irrelevant": {
+          "precision": 0.5982330668910392,
+          "recall": 0.5713137806347931,
+          "f1-score": 0.5844636251541308,
+          "support": 2489.0
+        },
+        "accuracy": 0.6637834036568214,
+        "macro avg": {
+          "precision": 0.6545018074437254,
+          "recall": 0.6518762584622073,
+          "f1-score": 0.6529123276061309,
+          "support": 14220.0
+        },
+        "weighted avg": {
+          "precision": 0.6625182383498273,
+          "recall": 0.6637834036568214,
+          "f1-score": 0.6628842904593079,
+          "support": 14220.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          3206,
+          372,
+          458,
+          277
+        ],
+        [
+          511,
+          2130,
+          582,
+          283
+        ],
+        [
+          354,
+          482,
+          2681,
+          395
+        ],
+        [
+          364,
+          352,
+          351,
+          1422
+        ]
+      ],
+      "label_order": [
+        "Negative",
+        "Neutral",
+        "Positive",
+        "Irrelevant"
+      ]
+    },
+    {
+      "fold": 4,
+      "train_rows": 56867,
+      "test_rows": 14250,
+      "train_tweet_ids": 9982,
+      "test_tweet_ids": 2465,
+      "tweet_id_overlap": 0,
+      "exact_text_overlap": 0,
+      "normalized_text_overlap": 0,
+      "train_class_counts": {
+        "Irrelevant": 9951,
+        "Negative": 17250,
+        "Neutral": 14026,
+        "Positive": 15640
+      },
+      "test_class_counts": {
+        "Irrelevant": 2497,
+        "Negative": 4321,
+        "Neutral": 3515,
+        "Positive": 3917
+      },
+      "fit_rows": 45481,
+      "validation_rows": 11386,
+      "best_validation_macro_f1": 0.6227069092597699,
+      "epochs_trained": 2.0,
+      "label_weights": {
+        "Negative": 0.8241103138363413,
+        "Neutral": 1.0137526747503567,
+        "Positive": 0.9088928856914469,
+        "Irrelevant": 1.4287823573762253
+      },
+      "fit_seconds": 483.7299091879995,
+      "predict_seconds": 17.625264121999862,
+      "artifact_bytes": 502184331,
+      "accuracy": 0.6550175438596492,
+      "macro_precision": 0.644233507924232,
+      "macro_recall": 0.6402317869812268,
+      "macro_f1": 0.6384328355486939,
+      "classification_report": {
+        "Negative": {
+          "precision": 0.7281702501096973,
+          "recall": 0.7681092339736172,
+          "f1-score": 0.7476067124676202,
+          "support": 4321.0
+        },
+        "Neutral": {
+          "precision": 0.6767600302800908,
+          "recall": 0.5086770981507823,
+          "f1-score": 0.5808023388013643,
+          "support": 3515.0
+        },
+        "Positive": {
+          "precision": 0.6413761676919572,
+          "recall": 0.7186622415113607,
+          "f1-score": 0.6778232602937635,
+          "support": 3917.0
+        },
+        "Irrelevant": {
+          "precision": 0.5306275836151823,
+          "recall": 0.5654785742891469,
+          "f1-score": 0.5474990306320279,
+          "support": 2497.0
+        },
+        "accuracy": 0.6550175438596492,
+        "macro avg": {
+          "precision": 0.644233507924232,
+          "recall": 0.6402317869812268,
+          "f1-score": 0.6384328355486939,
+          "support": 14250.0
+        },
+        "weighted avg": {
+          "precision": 0.6570163285821071,
+          "recall": 0.6550175438596492,
+          "f1-score": 0.652215271264437,
+          "support": 14250.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          3319,
+          269,
+          377,
+          356
+        ],
+        [
+          481,
+          1788,
+          768,
+          478
+        ],
+        [
+          393,
+          294,
+          2815,
+          415
+        ],
+        [
+          365,
+          291,
+          429,
+          1412
+        ]
+      ],
+      "label_order": [
+        "Negative",
+        "Neutral",
+        "Positive",
+        "Irrelevant"
+      ]
+    },
+    {
+      "fold": 5,
+      "train_rows": 56907,
+      "test_rows": 14210,
+      "train_tweet_ids": 9890,
+      "test_tweet_ids": 2557,
+      "tweet_id_overlap": 0,
+      "exact_text_overlap": 0,
+      "normalized_text_overlap": 0,
+      "train_class_counts": {
+        "Irrelevant": 9962,
+        "Negative": 17260,
+        "Neutral": 14036,
+        "Positive": 15649
+      },
+      "test_class_counts": {
+        "Irrelevant": 2486,
+        "Negative": 4311,
+        "Neutral": 3505,
+        "Positive": 3908
+      },
+      "fit_rows": 45521,
+      "validation_rows": 11386,
+      "best_validation_macro_f1": 0.626068945472364,
+      "epochs_trained": 2.0,
+      "label_weights": {
+        "Negative": 0.824237705511697,
+        "Neutral": 1.013740424015678,
+        "Positive": 0.9090382618420002,
+        "Irrelevant": 1.4280650018822938
+      },
+      "fit_seconds": 478.5439117369997,
+      "predict_seconds": 17.489538318000086,
+      "artifact_bytes": 502184331,
+      "accuracy": 0.6286418015482055,
+      "macro_precision": 0.6205163538100107,
+      "macro_recall": 0.6203466175716799,
+      "macro_f1": 0.6180264008239408,
+      "classification_report": {
+        "Negative": {
+          "precision": 0.7172907998150717,
+          "recall": 0.7197865924379494,
+          "f1-score": 0.7185365288873451,
+          "support": 4311.0
+        },
+        "Neutral": {
+          "precision": 0.5609259730348511,
+          "recall": 0.6291012838801712,
+          "f1-score": 0.5930607853684777,
+          "support": 3505.0
+        },
+        "Positive": {
+          "precision": 0.6953125,
+          "recall": 0.5693449334698055,
+          "f1-score": 0.6260551491277434,
+          "support": 3908.0
+        },
+        "Irrelevant": {
+          "precision": 0.5085361423901199,
+          "recall": 0.5631536604987932,
+          "f1-score": 0.534453139912197,
+          "support": 2486.0
+        },
+        "accuracy": 0.6286418015482055,
+        "macro avg": {
+          "precision": 0.6205163538100107,
+          "recall": 0.6203466175716799,
+          "f1-score": 0.6180264008239408,
+          "support": 14210.0
+        },
+        "weighted avg": {
+          "precision": 0.6361568102372811,
+          "recall": 0.6286418015482055,
+          "f1-score": 0.6299481391529066,
+          "support": 14210.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          3103,
+          547,
+          271,
+          390
+        ],
+        [
+          502,
+          2205,
+          375,
+          423
+        ],
+        [
+          362,
+          781,
+          2225,
+          540
+        ],
+        [
+          359,
+          398,
+          329,
+          1400
+        ]
+      ],
+      "label_order": [
+        "Negative",
+        "Neutral",
+        "Positive",
+        "Irrelevant"
+      ]
+    }
+  ],
+  "summary": {
+    "accuracy": {
+      "mean": 0.6484720795091492,
+      "standard_deviation": 0.015714406050025446
+    },
+    "macro_f1": {
+      "mean": 0.635486586744033,
+      "standard_deviation": 0.013961098571902903
+    },
+    "fit_seconds": {
+      "mean": 556.9291498237999,
+      "standard_deviation": 146.8606533648988
+    },
+    "predict_seconds": {
+      "mean": 17.954413282599944,
+      "standard_deviation": 0.44110657687268
+    },
+    "artifact_bytes": {
+      "mean": 502184331.0,
+      "standard_deviation": 0.0
+    }
+  },
+  "environment": {
+    "python": "3.13.15",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.20.1",
+    "accelerate": "1.15.0",
+    "scikit_learn": "1.9.1",
+    "device": "Tesla T4"
+  },
+  "created_at_utc": "2026-10-23T10:52:21.599225+00:00",
+  "dataset": {
+    "rows": 71117,
+    "unique_tweet_ids": 12447,
+    "entities": 32,
+    "class_counts": {
+      "Irrelevant": 12448,
+      "Negative": 21571,
+      "Neutral": 17541,
+      "Positive": 19557
+    },
+    "removed_missing_text": 858,
+    "removed_duplicate_rows": 2707,
+    "sha256": "68ebaee4f44bda5de49b96b5e5630184f1af894970b994aa6bb0aa5e1dbfe9a0"
+  }
+}
