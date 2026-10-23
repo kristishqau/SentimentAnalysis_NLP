@@ -102,6 +102,7 @@ def run_transformer_benchmark(
     batch_size: int = 32,
     max_length: int = 128,
     learning_rate: float = 2e-5,
+    weight_decay: float = 0.0,
     random_state: int = 42,
     validation_splits: int = 5,
     early_stopping_patience: int = 1,
@@ -245,6 +246,7 @@ def run_transformer_benchmark(
                 output_dir=temp_dir,
                 num_train_epochs=epochs,
                 learning_rate=learning_rate,
+                weight_decay=weight_decay,
                 per_device_train_batch_size=batch_size,
                 per_device_eval_batch_size=batch_size * 2,
                 eval_strategy="epoch",
@@ -326,6 +328,7 @@ def run_transformer_benchmark(
             "batch_size": batch_size,
             "max_length": max_length,
             "learning_rate": learning_rate,
+            "weight_decay": weight_decay,
             "random_seed": random_state,
             "validation_splits": validation_splits,
             "early_stopping_patience": early_stopping_patience,
@@ -383,6 +386,7 @@ def transformer_command(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--max-length", type=int, default=128)
     parser.add_argument("--learning-rate", type=float, default=2e-5)
+    parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--validation-folds", type=int, default=5)
     parser.add_argument("--early-stopping-patience", type=int, default=1)
@@ -415,6 +419,7 @@ def transformer_command(argv: Sequence[str] | None = None) -> None:
         batch_size=args.batch_size,
         max_length=args.max_length,
         learning_rate=args.learning_rate,
+        weight_decay=args.weight_decay,
         random_state=args.seed,
         validation_splits=args.validation_folds,
         early_stopping_patience=args.early_stopping_patience,

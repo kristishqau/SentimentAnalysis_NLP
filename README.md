@@ -132,6 +132,13 @@ the notebook cells in order. It starts with a two-fold smoke test before the two
 five-fold evidence runs and downloads both JSON reports. The reviewed reports are now
 checked into `reports/` and guarded by evidence regression tests.
 
+The same notebook also contains the preregistered nested optimization phase for
+DistilRoBERTa, DeBERTa-v3-small, learning rate, sequence length, weight decay, and
+three-seed stability. It writes one recoverable file per outer fold and refuses to
+merge incomplete or protocol-mismatched evidence. See the
+[study protocol](docs/TRANSFORMER_STUDY.md). The headline result will not change
+until all five new folds have been run and reviewed.
+
 `joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
 
 Launch the dependency-free interactive demo after training or benchmarking:

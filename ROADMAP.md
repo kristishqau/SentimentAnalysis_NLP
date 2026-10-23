@@ -51,6 +51,10 @@ Exit criterion: reproducible classical-versus-transformer evidence.
 - [ ] Measure the selected configuration across multiple fixed random seeds.
 - [ ] Publish row-level transformer slice and confidence diagnostics.
 
+The nested study runner, strict fold merger, tests, dependency lock, and recoverable
+Colab workflow are implemented. The unchecked items require the five GPU fold files;
+partial or unrun experiments are intentionally not reported as completed evidence.
+
 Exit criterion: the additional encoders and bounded search are evaluated without
 using outer-fold labels for selection, and their evidence passes repository checks.
 
