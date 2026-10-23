@@ -78,8 +78,7 @@ def test_checked_in_transformer_evidence_is_comparable_and_leakage_free() -> Non
     assert twitter_roberta["summary"]["macro_f1"]["mean"] == pytest.approx(0.635486587)
     assert twitter_roberta["summary"]["accuracy"]["mean"] == pytest.approx(0.648472080)
     assert (
-        twitter_roberta["summary"]["macro_f1"]["mean"]
-        > distilbert["summary"]["macro_f1"]["mean"]
+        twitter_roberta["summary"]["macro_f1"]["mean"] > distilbert["summary"]["macro_f1"]["mean"]
     )
     assert (
         twitter_roberta["summary"]["macro_f1"]["mean"]

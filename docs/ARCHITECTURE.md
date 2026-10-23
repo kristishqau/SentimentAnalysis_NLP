@@ -40,7 +40,7 @@ their dependency explicit in the evaluation unit.
 
 ## Model boundary
 
-The selected model is one scikit-learn pipeline containing:
+The lightweight deployment model is one scikit-learn pipeline containing:
 
 - word TF-IDF for phrases;
 - character TF-IDF for spelling variation and noisy social text;
@@ -65,6 +65,12 @@ can differ by target. The score is still modest. `Irrelevant` is the weakest cla
 0.4689 mean F1, and short text remains a difficult slice. Those limitations are
 reported instead of concealed behind the legacy 84.9% leaky random-split score.
 
+The subsequent identical-fold GPU benchmark established Twitter-RoBERTa as the quality
+winner at **0.6355 ± 0.0140 macro-F1** and **0.6485 ± 0.0157 accuracy**. It improved
+all four classes, including `Irrelevant` from 0.4689 to 0.5525 F1. Its approximately
+478.92 MiB fold artifact is 157 times larger than the classical artifact, so model
+quality and deployment efficiency are reported as separate decisions.
+
 ## Evidence and operational boundaries
 
 - `reports/benchmark_v2.json` is the machine-readable model-comparison record.
@@ -72,8 +78,8 @@ reported instead of concealed behind the legacy 84.9% leaky random-split score.
   confusion, and representative-error evidence.
 - `reports/MODEL_CARD.md` and `reports/DATA_CARD.md` define intended use, limitations,
   provenance, licensing, and responsible-use boundaries.
-- The optional transformer track reuses the same groups and emits a separate result;
-  no transformer quality claim is made until a GPU run is reviewed.
+- The transformer track reuses the canonical groups, performs checkpoint selection on
+  grouped inner validation data, and preserves two reviewed GPU reports.
 - The local HTTP demo loads the model once, validates input, labels confidence as
   uncalibrated, and exposes `/healthz`.
 - The container installs from `uv.lock`, runs as UID/GID 10001, mounts the model

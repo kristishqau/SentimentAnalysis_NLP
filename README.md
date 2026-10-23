@@ -4,13 +4,27 @@
 [![Python 3.11–3.14](https://img.shields.io/badge/python-3.11--3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-green.svg)](LICENSE)
 
-A production-minded, classical NLP baseline for four-class, entity-focused tweet sentiment. The project classifies text as **Negative**, **Neutral**, **Positive**, or **Irrelevant** while making data leakage, reproducibility, and artifact provenance first-class concerns.
+A production-minded NLP system for four-class, entity-focused tweet sentiment. The project classifies text as **Negative**, **Neutral**, **Positive**, or **Irrelevant** while making data leakage, reproducibility, artifact provenance, and quality-cost trade-offs first-class concerns.
 
 ![Entity Sentiment Lab demo](docs/images/demo.png)
 
 The central result is not an inflated notebook score: it is a defensible evaluation protocol. Augmented variants in this dataset share tweet IDs, and text can recur under different IDs with exact or superficial formatting changes. This implementation keeps every connected duplicate family inside one fold during evaluation and model selection.
 
-## Verified v2 result
+## Verified transformer result
+
+Twitter-RoBERTa is the quality winner at **64.85% ± 1.57% accuracy** and
+**63.55% ± 1.40% macro-F1** across the same five connected-group outer folds as the
+classical benchmark. It gains **6.69 absolute macro-F1 points** over the strongest
+classical model, an 11.76% relative improvement. `Irrelevant` F1 improves from 46.89%
+to 55.25%, the largest class-level gain, while remaining the hardest class.
+
+The transformer fold artifact averages 478.92 MiB, approximately 157 times the
+classical artifact. Twitter-RoBERTa is therefore the quality leader, while the
+entity-aware classical pipeline remains the lightweight local-demo and CPU-deployment
+baseline. See the [transformer benchmark](reports/TRANSFORMER_BENCHMARK.md) for the
+complete DistilBERT comparison, runtime evidence, and deployment decision.
+
+### Classical baseline evidence
 
 The checked-in experiment evidence records:
 
@@ -26,6 +40,7 @@ This score is intentionally lower than the original notebook's 84.9% random-spli
 - End-to-end scikit-learn pipeline: word `(1, 2)` and character `(3, 5)` TF-IDF, one-hot entity context, and balanced logistic regression.
 - Leakage-safe connected grouping over tweet ID, exact-text hash, and conservatively normalized text.
 - Nested grouped, stratified evaluation: five outer folds and three inner selection folds.
+- Grouped transformer validation, early stopping, macro-F1 checkpoint selection, and balanced loss.
 - Versioned model artifact containing preprocessing, classifier, and experiment metadata together.
 - Installable `src/` package with train and predict CLIs.
 - An enforced 85% branch-coverage floor, Ruff quality gates, Python 3.11–3.14 CI, dependency auditing, and Dependabot.
@@ -114,9 +129,8 @@ uv run sentiment-transformer-benchmark --folds 5 --epochs 3 \
 
 For a free GPU, select the badge above, sign in to Colab, choose a GPU runtime, and run
 the notebook cells in order. It starts with a two-fold smoke test before the two full
-five-fold evidence runs and downloads both JSON reports. Transformer results are
-deliberately not claimed in this README until those GPU runs complete and their evidence
-is reviewed.
+five-fold evidence runs and downloads both JSON reports. The reviewed reports are now
+checked into `reports/` and guarded by evidence regression tests.
 
 `joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
 
@@ -126,7 +140,8 @@ Launch the dependency-free interactive demo after training or benchmarking:
 uv run sentiment-demo --model artifacts/sentiment_model.joblib
 ```
 
-Open `http://127.0.0.1:8000`. The demo includes entity-aware examples,
+Open `http://127.0.0.1:8000`. The lightweight demo currently serves the classical model
+and includes entity-aware examples,
 uncalibrated confidence, responsible-use limitations, request-size validation, a
 content-security policy, and a `/healthz` endpoint. It binds to localhost by default;
 do not expose it publicly without authentication, TLS, rate limiting, and production
@@ -152,6 +167,9 @@ container filesystem. CI builds the image and verifies both health and inference
 - [Model card](reports/MODEL_CARD.md) — intended use, methodology, metrics, limitations, and ethical considerations.
 - [V2 benchmark](reports/BENCHMARK.md) — candidate comparison, protocol, decision, and timing caveat.
 - [Error analysis](reports/ERROR_ANALYSIS.md) — class, entity, length, frequency, confusion, and representative-error findings.
+
+The [transformer benchmark](reports/TRANSFORMER_BENCHMARK.md) provides the reviewed
+identical-fold quality, class-level, runtime, and artifact-size comparison.
 
 Run the same local gates as CI:
 

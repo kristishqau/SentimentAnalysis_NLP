@@ -33,6 +33,14 @@ Mean entity-aware per-class F1 across the outer folds was:
 
 `Irrelevant` remains the weakest class and is a priority for error analysis.
 
+## Modern model comparison
+
+The follow-up GPU benchmark reused the exact outer folds. DistilBERT reached 0.6039 ±
+0.0093 macro-F1, while Twitter-RoBERTa reached **0.6355 ± 0.0140**. The transformer
+quality winner improves every class and gains 0.0669 absolute macro-F1 over this
+classical model, but its mean artifact is approximately 157 times larger. See the
+[transformer benchmark](TRANSFORMER_BENCHMARK.md) for the full protocol and cost decision.
+
 ## Protocol
 
 The benchmark uses five-fold outer `StratifiedGroupKFold`. Within each non-trivial

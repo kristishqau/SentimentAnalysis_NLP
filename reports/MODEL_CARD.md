@@ -2,9 +2,9 @@
 
 ## Model overview
 
-The v2 model is a classical multiclass NLP system that combines word-level and character-level TF-IDF, one-hot entity context, and class-balanced logistic regression. Preprocessing and classification are persisted as one scikit-learn pipeline so inference cannot accidentally use different feature transformations.
+The project has two deliberate model tiers. Twitter-RoBERTa is the verified quality leader. A classical model combining word-level and character-level TF-IDF, one-hot entity context, and class-balanced logistic regression remains the lightweight inference and demo baseline. Classical preprocessing and classification are persisted as one scikit-learn pipeline so inference cannot accidentally use different feature transformations.
 
-The design favors interpretability, fast CPU inference, deterministic experimentation, and a strong engineering baseline over architecture novelty.
+This separation makes the quality-cost decision explicit: the transformer improves every class, while the classical artifact favors interpretability, fast CPU inference, deterministic reproduction, and small deployment size.
 
 ## Intended use
 
@@ -34,9 +34,25 @@ Run completed: 2026-10-21. Environment: Python 3.12.0, pandas 2.3.3, scikit-lear
 
 See the [v2 benchmark report](BENCHMARK.md) for every baseline and the runtime caveat. These results should not be compared directly with the legacy notebook's 84.9% score because that experiment used a leaky row-random split and test-set model selection.
 
+### Transformer quality leader
+
+Run completed: 2026-10-23 on a Tesla T4. The five-fold Twitter-RoBERTa result is 0.6485
+± 0.0157 accuracy and 0.6355 ± 0.0140 macro-F1. This is a 0.0669 absolute macro-F1
+gain over the classical model. Mean class F1 is Negative 0.7333, Neutral 0.5948,
+Positive 0.6613, and Irrelevant 0.5525.
+
+Each outer training partition uses a separate grouped validation partition for balanced-loss
+training, early stopping, and macro-F1 checkpoint selection. All outer folds have zero
+tweet-ID, exact-text, and normalized-text overlap. The reviewed DistilBERT comparison
+reached 0.6039 ± 0.0093 macro-F1 under the same protocol.
+
+Twitter-RoBERTa's mean fold artifact is 478.92 MiB versus approximately 3.04 MiB for the
+classical model. It is therefore the benchmark winner, not yet the default demo artifact.
+See [the transformer benchmark](TRANSFORMER_BENCHMARK.md) for evidence and timing.
+
 ## Limitations
 
-The weakest class is `Irrelevant`, and overall performance is insufficient for high-impact use. The classifier is trained on historical English social-media data about 32 entities and may fail on new entities, dialects, code-switching, sarcasm, reclaimed slurs, emerging vocabulary, or text that requires conversational context. Grouping blocks known exact/ID duplicates but cannot guarantee removal of every semantic near-duplicate.
+The weakest class remains `Irrelevant`, and overall performance is insufficient for high-impact use. The models are trained on historical English social-media data about 32 entities and may fail on new entities, dialects, code-switching, sarcasm, reclaimed slurs, emerging vocabulary, or text that requires conversational context. Grouping blocks known exact/ID duplicates but cannot guarantee removal of every semantic near-duplicate.
 
 The [out-of-fold error analysis](ERROR_ANALYSIS.md) shows especially weak results for short messages and several entity slices. It also indicates that the flat target combines entity relevance with polarity and that some labels are plausibly ambiguous. Reported probabilities are not calibrated and must not be treated as reliable certainty.
 
@@ -44,7 +60,12 @@ The model may reproduce dataset biases. Aggregate metrics can hide disparities f
 
 ## Reproducibility and artifacts
 
-The primary evidence is stored in [`benchmark_v2.json`](benchmark_v2.json), including the input hash, cleaning counts, every fold's metrics and leakage diagnostics, uncertainty, selected parameters, timings, artifact sizes, and environment versions. Run `sentiment-benchmark` to reproduce it. [`experiment.json`](experiment.json) remains as historical v1 holdout evidence. Floating-point results and timings can vary across platforms and compatible dependency releases.
+The classical evidence is stored in [`benchmark_v2.json`](benchmark_v2.json). Reviewed
+transformer evidence is stored in [`transformer_benchmark.json`](transformer_benchmark.json)
+and [`transformer_distilbert_benchmark.json`](transformer_distilbert_benchmark.json).
+Together they include the input hash, cleaning counts, fold metrics, leakage diagnostics,
+uncertainty, timings, artifact sizes, and environment versions. Floating-point results and
+timings can vary across hardware and compatible dependency releases.
 
 The generated `joblib` artifact is intentionally excluded from Git because it is reproducible and binary. Joblib deserialization can execute arbitrary code; load only trusted artifacts.
 

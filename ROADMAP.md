@@ -36,9 +36,9 @@ Exit criterion: an automated error-analysis report connected to specific next ex
 ## Milestone 4 — Modern benchmark
 
 - [x] Add an optional compact transformer extra, grouped benchmark CLI, and Colab GPU workflow.
-- [ ] Run it against the identical grouped folds.
-- [ ] Compare macro-F1, accuracy, training time, inference latency, and artifact size.
-- [ ] Document the quality/cost trade-off rather than assuming the largest model is best.
+- [x] Run it against the identical grouped folds.
+- [x] Compare macro-F1, accuracy, training time, inference latency, and artifact size.
+- [x] Document the quality/cost trade-off rather than assuming the largest model is best.
 
 Exit criterion: reproducible classical-versus-transformer evidence.
 
@@ -50,3 +50,12 @@ Exit criterion: reproducible classical-versus-transformer evidence.
 - [x] Run the final security, documentation, packaging, notebook, and repository audit.
 
 Exit criterion: a recruiter can understand, run, and interact with the project in under five minutes.
+
+## Milestone 6 — Public portfolio deployment
+
+- [ ] Build a self-contained image containing the trusted classical artifact.
+- [ ] Verify the self-contained image without host volume mounts in CI.
+- [ ] Deploy behind provider-managed TLS with health checks and resource limits.
+- [ ] Add the live URL and uptime boundary to the README.
+
+Exit criterion: a recruiter can open a public, rate-limited demo without local setup.
