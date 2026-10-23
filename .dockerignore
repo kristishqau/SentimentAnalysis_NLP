@@ -12,3 +12,5 @@ reports
 tests
 *.joblib
 *.pkl
+!artifacts/
+!artifacts/sentiment_model.joblib

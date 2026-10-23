@@ -53,8 +53,8 @@ Exit criterion: a recruiter can understand, run, and interact with the project i
 
 ## Milestone 6 — Public portfolio deployment
 
-- [ ] Build a self-contained image containing the trusted classical artifact.
-- [ ] Verify the self-contained image without host volume mounts in CI.
+- [x] Build a self-contained image containing the trusted classical artifact.
+- [x] Verify the self-contained image without host volume mounts in CI.
 - [ ] Deploy behind provider-managed TLS with health checks and resource limits.
 - [ ] Add the live URL and uptime boundary to the README.
 

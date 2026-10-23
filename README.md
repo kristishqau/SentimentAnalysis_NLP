@@ -159,6 +159,11 @@ non-root user, and exposes a Docker health check. Compose binds only to localhos
 mounts the trusted model read-only, drops Linux capabilities, and uses a read-only
 container filesystem. CI builds the image and verifies both health and inference.
 
+For a public container release without host-mounted files, follow the
+[deployment guide](docs/DEPLOYMENT.md). It creates a self-contained image from the
+trusted local artifact and defines the TLS, health-check, logging, throttling, and
+resource contract expected from the hosting provider.
+
 ## Explore and develop
 
 - [Exploration notebook](notebooks/sentiment_analysis.ipynb) — compact EDA, leakage demonstration, split audit, and result visualization. It calls package code instead of duplicating training logic.

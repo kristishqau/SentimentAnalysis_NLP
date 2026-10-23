@@ -81,14 +81,21 @@ jobs:
             --model-output /output/sentiment_model.joblib \
             --metrics-output /output/metrics.json \
             --holdout-folds 2 --cv-folds 2 --max-features 100 --jobs 1
+      - name: Build self-contained deployment image
+        run: |
+          mkdir --parents artifacts
+          cp "${{ runner.temp }}/sentiment-artifacts/sentiment_model.joblib" \
+            artifacts/sentiment_model.joblib
+          docker build --file Dockerfile.public \
+            --build-arg BASE_IMAGE=sentiment-demo:test \
+            --tag sentiment-demo:public .
       - name: Start hardened demo container
         run: |
           docker run --detach --name sentiment-demo \
             --publish 127.0.0.1:8000:8000 \
             --read-only --tmpfs /tmp:size=16m,mode=1777 \
             --cap-drop ALL --security-opt no-new-privileges:true \
-            --volume "${{ runner.temp }}/sentiment-artifacts/sentiment_model.joblib:/app/artifacts/sentiment_model.joblib:ro" \
-            sentiment-demo:test
+            sentiment-demo:public
       - name: Verify health and inference
         run: |
           for attempt in {1..30}; do
