@@ -44,8 +44,6 @@ dev = [
 transformer = [
   "accelerate>=1,<2",
   "datasets>=5.0.1,<6",
-  "protobuf>=5,<7",
-  "sentencepiece>=0.2,<1",
   "torch>=2.2,<3",
   "transformers>=5,<6",
 ]
@@ -58,8 +56,6 @@ sentiment-analyze = "sentiment_analysis.analysis_cli:analysis_command"
 sentiment-demo = "sentiment_analysis.demo:demo_command"
 sentiment-transformer-benchmark = "sentiment_analysis.transformer:transformer_command"
 sentiment-transformer-analyze = "sentiment_analysis.transformer_analysis:transformer_analysis_command"
-sentiment-transformer-study = "sentiment_analysis.transformer_study:transformer_study_command"
-sentiment-transformer-study-merge = "sentiment_analysis.transformer_study:transformer_study_merge_command"
 
 [project.urls]
 Repository = "https://github.com/kristishqau/SentimentAnalysis_NLP"
@@ -84,10 +80,7 @@ testpaths = ["tests"]
 
 [tool.coverage.run]
 branch = true
-omit = [
-  "src/sentiment_analysis/transformer.py",
-  "src/sentiment_analysis/transformer_study.py",
-]
+omit = ["src/sentiment_analysis/transformer.py"]
 
 [tool.coverage.report]
 fail_under = 85

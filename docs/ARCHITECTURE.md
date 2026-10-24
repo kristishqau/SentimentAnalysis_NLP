@@ -63,7 +63,8 @@ all five fold comparisons.
 The gain is meaningful because the task is entity-focused: sentiment in one message
 can differ by target. The score is still modest. `Irrelevant` is the weakest class at
 0.4689 mean F1, and short text remains a difficult slice. Those limitations are
-reported instead of concealed behind the legacy 84.9% leaky random-split score.
+reported directly because random row splits can overstate performance when augmented
+families cross the evaluation boundary.
 
 The subsequent identical-fold GPU benchmark established Twitter-RoBERTa as the quality
 winner at **0.6355 ± 0.0140 macro-F1** and **0.6485 ± 0.0157 accuracy**. It improved
@@ -73,7 +74,7 @@ quality and deployment efficiency are reported as separate decisions.
 
 ## Evidence and operational boundaries
 
-- `reports/benchmark_v2.json` is the machine-readable model-comparison record.
+- `reports/benchmark.json` is the machine-readable model-comparison record.
 - `reports/error_analysis.json` contains out-of-fold class, entity, length, frequency,
   confusion, and representative-error evidence.
 - `reports/MODEL_CARD.md` and `reports/DATA_CARD.md` define intended use, limitations,

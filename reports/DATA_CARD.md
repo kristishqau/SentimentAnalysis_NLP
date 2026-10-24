@@ -25,7 +25,7 @@ The repository includes `twitter_training.csv` and `twitter_validation.csv` for 
 
 ## Quality and leakage risks
 
-Tweet IDs identify clusters of near-duplicate augmented examples, so a row-random split overstates generalization. Exact text and surface variants can also appear under different IDs. The package builds connected components over tweet ID, exact-text hash, and conservatively normalized text, then assigns each component wholly to one fold. Every verified v2 fold has zero ID, exact-text, and normalized-text overlap.
+Tweet IDs identify clusters of near-duplicate augmented examples, so a row-random split overstates generalization. Exact text and surface variants can also appear under different IDs. The package builds connected components over tweet ID, exact-text hash, and conservatively normalized text, then assigns each component wholly to one fold. Every verified fold has zero ID, exact-text, and normalized-text overlap.
 
 Other known limitations include mislabeled or ambiguous sentiment, synthetic-looking text perturbations, mojibake, class imbalance, entity-specific vocabulary, and historical domain shift. Exact grouping does not prove that all semantic near-duplicates have been discovered.
 

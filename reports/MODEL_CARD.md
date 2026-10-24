@@ -14,7 +14,7 @@ It is not designed for production moderation or decisions about people. Do not u
 
 ## Training and evaluation protocol
 
-After schema validation, records with unusable text and exact duplicate rows are removed. Connected components link records that share a tweet ID, exact text, or conservatively normalized near-duplicate text. V2 compares four architectures with shuffled five-fold outer `StratifiedGroupKFold` using seed 42. Within every non-trivial candidate and outer fold, three-fold grouped cross-validation chooses logistic-regression `C` from `0.5`, `1.0`, and `2.0` by macro-F1.
+After schema validation, records with unusable text and exact duplicate rows are removed. Connected components link records that share a tweet ID, exact text, or conservatively normalized near-duplicate text. The benchmark compares four architectures with shuffled five-fold outer `StratifiedGroupKFold` using seed 42. Within every non-trivial candidate and outer fold, three-fold grouped cross-validation chooses logistic-regression `C` from `0.5`, `1.0`, and `2.0` by macro-F1.
 
 All learned feature extraction occurs inside the cross-validated pipeline. Each outer test fold is excluded from vectorizer fitting, model fitting, and hyperparameter selection. After evaluation, the winning architecture is tuned and fitted on every usable row to produce the inference artifact.
 
@@ -32,7 +32,7 @@ Run completed: 2026-10-21. Environment: Python 3.12.0, pandas 2.3.3, scikit-lear
 - Mean per-class F1: Negative 0.6648; Positive 0.5867; Neutral 0.5540; Irrelevant 0.4689.
 - Improvement over word+character without entity context: 0.0268 macro-F1.
 
-See the [v2 benchmark report](BENCHMARK.md) for every baseline and the runtime caveat. These results should not be compared directly with the legacy notebook's 84.9% score because that experiment used a leaky row-random split and test-set model selection.
+See the [benchmark report](BENCHMARK.md) for every baseline and the runtime caveat. Random row splits are not comparable because related augmented records can cross the evaluation boundary and overstate generalization.
 
 ### Transformer quality leader
 
@@ -47,7 +47,7 @@ tweet-ID, exact-text, and normalized-text overlap. The reviewed DistilBERT compa
 reached 0.6039 ± 0.0093 macro-F1 under the same protocol.
 
 Twitter-RoBERTa's mean fold artifact is 478.92 MiB versus approximately 3.04 MiB for the
-classical model. It is therefore the benchmark winner, not yet the default demo artifact.
+classical model. It is therefore the benchmark winner, while the smaller classical artifact powers the demo.
 See [the transformer benchmark](TRANSFORMER_BENCHMARK.md) for evidence and timing.
 
 ## Limitations
@@ -60,7 +60,7 @@ The model may reproduce dataset biases. Aggregate metrics can hide disparities f
 
 ## Reproducibility and artifacts
 
-The classical evidence is stored in [`benchmark_v2.json`](benchmark_v2.json). Reviewed
+The classical evidence is stored in [`benchmark.json`](benchmark.json). Reviewed
 transformer evidence is stored in [`transformer_benchmark.json`](transformer_benchmark.json)
 and [`transformer_distilbert_benchmark.json`](transformer_distilbert_benchmark.json).
 Together they include the input hash, cleaning counts, fold metrics, leakage diagnostics,

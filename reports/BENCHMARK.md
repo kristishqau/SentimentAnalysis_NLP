@@ -1,4 +1,4 @@
-# V2 model benchmark
+# Classical model benchmark
 
 ## Decision
 
@@ -7,7 +7,7 @@ one-hot entity context, and class-balanced logistic regression. Across five oute
 connected-group folds it achieved **0.5686 ± 0.0090 macro-F1** and
 **0.5811 ± 0.0095 accuracy**.
 
-The complete fold-level evidence is in [`benchmark_v2.json`](benchmark_v2.json).
+The complete fold-level evidence is in [`benchmark.json`](benchmark.json).
 Every outer fold has zero shared tweet IDs, exact texts, and normalized
 near-duplicate texts between its training and test partitions.
 

@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 
 
-def test_checked_in_v2_evidence_is_consistent_and_leakage_free() -> None:
-    report_path = Path(__file__).parents[1] / "reports" / "benchmark_v2.json"
+def test_checked_in_benchmark_evidence_is_consistent_and_leakage_free() -> None:
+    report_path = Path(__file__).parents[1] / "reports" / "benchmark.json"
     evidence = json.loads(report_path.read_text(encoding="utf-8"))
 
     assert evidence["selection"]["model_kind"] == "entity_word_char"
@@ -46,7 +46,7 @@ def test_checked_in_error_analysis_matches_the_selected_model() -> None:
 
 def test_checked_in_transformer_evidence_is_comparable_and_leakage_free() -> None:
     reports = Path(__file__).parents[1] / "reports"
-    classical = json.loads((reports / "benchmark_v2.json").read_text(encoding="utf-8"))
+    classical = json.loads((reports / "benchmark.json").read_text(encoding="utf-8"))
     distilbert = json.loads(
         (reports / "transformer_distilbert_benchmark.json").read_text(encoding="utf-8")
     )

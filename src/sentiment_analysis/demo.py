@@ -79,7 +79,7 @@ DEMO_HTML = """<!doctype html>
       <li>Not for moderation or decisions about people.</li><li>Input stays on this local server.</li>
     </ul></section>
   </aside></div>
-  <footer>TF-IDF + entity context · balanced logistic regression · v2 macro-F1 56.86% ± 0.90%</footer>
+  <footer>TF-IDF + entity context · balanced logistic regression · macro-F1 56.86% ± 0.90%</footer>
 </main><script>
 const examples={positive:["Microsoft","The latest update is excellent and everything works smoothly."],negative:["Microsoft","The update broke everything and the service is awful."],relevance:["AssassinsCreed","Vinland Saga looks amazing and I cannot wait to play it!"]};
 document.querySelectorAll('[data-example]').forEach(b=>b.onclick=()=>{const v=examples[b.dataset.example];entity.value=v[0];text.value=v[1]});

@@ -6,6 +6,19 @@
 
 A production-minded NLP system for four-class, entity-focused tweet sentiment. The project classifies text as **Negative**, **Neutral**, **Positive**, or **Irrelevant** while making data leakage, reproducibility, artifact provenance, and quality-cost trade-offs first-class concerns.
 
+## Portfolio snapshot
+
+- **71,117** usable records, **12,447** tweet IDs, and **32** target entities.
+- **0.6355 ± 0.0140 macro-F1** with Twitter-RoBERTa on five leakage-resistant folds.
+- **11.76% relative macro-F1 improvement** over the strongest classical baseline.
+- **Zero** tweet-ID, exact-text, or normalized-text overlap in every published fold.
+- **30 tests and 90%+ coverage**, Python 3.11–3.14 CI, dependency auditing, and a
+  container smoke test.
+
+Recruiters can start with the [project status](docs/PROJECT_STATUS.md). The
+[CV and interview guide](docs/CV_AND_INTERVIEW.md) contains copy-ready bullets, a
+technical walkthrough, likely questions, and a five-minute demonstration script.
+
 ![Entity Sentiment Lab demo](docs/images/demo.png)
 
 The central result is not an inflated notebook score: it is a defensible evaluation protocol. Augmented variants in this dataset share tweet IDs, and text can recur under different IDs with exact or superficial formatting changes. This implementation keeps every connected duplicate family inside one fold during evaluation and model selection.
@@ -33,7 +46,9 @@ The checked-in experiment evidence records:
 - **0 shared tweet IDs, exact texts, or normalized near-duplicate texts** in every outer fold.
 - Four comparable baselines, nested hyperparameter selection, fold-level metrics, runtime, artifact size, deterministic seed, input SHA-256, and package versions.
 
-This score is intentionally lower than the original notebook's 84.9% random-split result. That older approach allowed related augmented samples to cross the boundary and selected models against its test set. See the [benchmark narrative](reports/BENCHMARK.md), [model card](reports/MODEL_CARD.md), and [machine-readable fold evidence](reports/benchmark_v2.json).
+Random row splits are not comparable because related augmented samples can cross the
+evaluation boundary and overstate generalization. See the [benchmark narrative](reports/BENCHMARK.md),
+[model card](reports/MODEL_CARD.md), and [machine-readable fold evidence](reports/benchmark.json).
 
 ## Engineering highlights
 
@@ -115,8 +130,6 @@ uv run sentiment-analyze --output reports/error_analysis.json
 
 [![Open transformer benchmark in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kristishqau/SentimentAnalysis_NLP/blob/main/notebooks/transformer_benchmark_colab.ipynb)
 
-[![Open optimization study in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kristishqau/SentimentAnalysis_NLP/blob/main/notebooks/transformer_optimization_colab.ipynb)
-
 The GPU benchmark compares compact DistilBERT with a Twitter-pretrained RoBERTa encoder
 on identical connected outer folds and records quality, training time, inference time,
 and artifact size. Its PyTorch stack is isolated from the normal installation:
@@ -126,20 +139,13 @@ uv sync --locked --extra transformer
 uv run sentiment-transformer-benchmark --folds 5 --epochs 3 \
   --validation-folds 5 --early-stopping-patience 1 \
   --class-weighting balanced \
-  --reference reports/benchmark_v2.json
+  --reference reports/benchmark.json
 ```
 
 For a free GPU, select the badge above, sign in to Colab, choose a GPU runtime, and run
 the notebook cells in order. It starts with a two-fold smoke test before the two full
 five-fold evidence runs and downloads both JSON reports. The reviewed reports are now
 checked into `reports/` and guarded by evidence regression tests.
-
-The same notebook also contains the preregistered nested optimization phase for
-DistilRoBERTa, DeBERTa-v3-small, learning rate, sequence length, weight decay, and
-three-seed stability. It writes one recoverable file per outer fold and refuses to
-merge incomplete or protocol-mismatched evidence. See the
-[study protocol](docs/TRANSFORMER_STUDY.md). The headline result will not change
-until all five new folds have been run and reviewed.
 
 `joblib` can execute code during deserialization. Load only artifacts you created or obtained from a trusted source.
 
@@ -179,8 +185,10 @@ resource contract expected from the hosting provider.
 - [GPU benchmark notebook](notebooks/transformer_benchmark_colab.ipynb) — Colab workflow for the optional compact transformer comparison.
 - [Data card](reports/DATA_CARD.md) — provenance, schema, quality findings, responsible-use notes, and licensing boundary.
 - [Model card](reports/MODEL_CARD.md) — intended use, methodology, metrics, limitations, and ethical considerations.
-- [V2 benchmark](reports/BENCHMARK.md) — candidate comparison, protocol, decision, and timing caveat.
+- [Classical benchmark](reports/BENCHMARK.md) — candidate comparison, protocol, decision, and timing caveat.
 - [Error analysis](reports/ERROR_ANALYSIS.md) — class, entity, length, frequency, confusion, and representative-error findings.
+- [Project status](docs/PROJECT_STATUS.md) — final scope, evidence, trade-offs, and limitations.
+- [CV and interview guide](docs/CV_AND_INTERVIEW.md) — copy-ready bullets, answers, and demo script.
 
 The [transformer benchmark](reports/TRANSFORMER_BENCHMARK.md) provides the reviewed
 identical-fold quality, class-level, runtime, and artifact-size comparison.
